@@ -7,7 +7,8 @@ from app.repositories.budget_repository import (
     create_budget,
     get_budgets_by_user,
     get_budget_by_category,
-    delete_budget
+    delete_budget,
+    get_budget_by_id
 )
 
 from app.repositories.category_repository import get_category_by_id
@@ -49,12 +50,10 @@ def list_user_budgets(
     user_id: int
 ):
 
-    budgets = get_budgets_by_user(
+    return get_budgets_by_user(
         db,
         user_id
     )
-
-    return budgets
 
 
 def remove_user_budget(
@@ -63,20 +62,21 @@ def remove_user_budget(
     budget_id: int
 ):
 
-    budgets = get_budgets_by_user(
+    budget = get_budget_by_id(
         db,
-        user_id
-    )
-
-    budget = next(
-        (b for b in budgets if b.id == budget_id),
-        None
+        budget_id
     )
 
     if not budget:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Budget not found"
+        )
+
+    if budget.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized"
         )
 
     delete_budget(
@@ -99,4 +99,7 @@ def check_category_budget(
         category_id
     )
 
-    return budget
+    if not budget:
+        return None
+
+    return budget.monthly_limit

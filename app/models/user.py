@@ -24,5 +24,9 @@ class User(BaseModel):
 
     # Relacionamentos
     accounts = relationship("Account", back_populates="user", cascade="all, delete")
+
     categories = relationship("Category", back_populates="user", cascade="all, delete")
+
     transactions = relationship("Transaction", back_populates="user", cascade="all, delete")
+
+    budgets = relationship("Budget", back_populates="user", cascade="all, delete")

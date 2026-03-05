@@ -36,3 +36,9 @@ class Category(BaseModel):
         back_populates="category",
         cascade="all, delete-orphan"
     )
+
+    budgets = relationship(
+        "Budget",
+        back_populates="category",
+        cascade="all, delete-orphan"
+    )
