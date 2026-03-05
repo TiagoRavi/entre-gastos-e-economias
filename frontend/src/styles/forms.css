@@ -1,0 +1,39 @@
+/* ============================= */
+/* FORM */
+/* ============================= */
+
+.modal-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.form-group label{
+  font-size:13px;
+  color:#6b7280;
+}
+
+.form-group input,
+.form-group select{
+  height:40px;
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  background:#fafafa;
+  transition:.15s;
+}
+
+input:focus,
+select:focus{
+  border-color:#6366f1;
+  outline:none;
+  background:white;
+  box-shadow:0 0 0 2px rgba(99,102,241,.15);
+}

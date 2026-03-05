@@ -1,0 +1,11 @@
+/* ============================= */
+/* TABLE */
+/* ============================= */
+
+.table-row{
+  transition: background .15s ease;
+}
+
+.table-row:hover{
+  background:#f9fafb;
+}

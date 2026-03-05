@@ -1,7 +1,9 @@
-# app/services/transaction_service.py
-
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
+from datetime import date
+from math import ceil
+
+from app.schemas.enums import TransactionType
 
 from app.repositories.transaction_repository import (
     create_transaction,
@@ -19,10 +21,11 @@ def create_user_transaction(
     user_id: int,
     account_id: int,
     category_id: int | None,
-    type: str,
+    type: TransactionType,
     amount: float,
     description: str | None,
-    date
+    date: date,
+    status: str = "pending"
 ):
 
     account = get_account_by_id(db, account_id)
@@ -55,15 +58,28 @@ def create_user_transaction(
                 detail="Not authorized"
             )
 
+    if type == TransactionType.income and amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Income must be positive"
+        )
+
+    if type == TransactionType.expense and amount > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Expense must be negative"
+        )
+
     transaction = create_transaction(
         db=db,
         user_id=user_id,
         account_id=account_id,
         category_id=category_id,
-        type=type,
+        type=type.value,
         amount=amount,
         description=description,
-        date=date
+        date=date,
+        status=status
     )
 
     return transaction
@@ -71,15 +87,57 @@ def create_user_transaction(
 
 def list_user_transactions(
     db: Session,
-    user_id: int
+    user_id: int,
+    page: int,
+    limit: int
 ):
 
     result = get_transactions_by_user(
-        db,
-        user_id
+        db=db,
+        user_id=user_id,
+        page=page,
+        limit=limit
     )
 
-    return result["items"]
+    total = result["total"]
+
+    pages = ceil(total / limit) if total > 0 else 1
+
+    return {
+        "items": result["items"],
+        "pages": pages
+    }
+
+
+def confirm_user_transaction(
+    db: Session,
+    user_id: int,
+    transaction_id: int
+):
+
+    transaction = get_transaction_by_id(
+        db,
+        transaction_id
+    )
+
+    if not transaction:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Transaction not found"
+        )
+
+    if transaction.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized"
+        )
+
+    transaction.status = "confirmed"
+
+    db.commit()
+    db.refresh(transaction)
+
+    return transaction
 
 
 def remove_user_transaction(

@@ -4,7 +4,13 @@ import Topbar from "../components/Topbar"
 
 export default function DashboardLayout() {
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        width: "100%"
+      }}
+    >
 
       <Sidebar />
 
@@ -12,13 +18,20 @@ export default function DashboardLayout() {
         style={{
           flex: 1,
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          background: "#f3f4f6"
         }}
       >
 
         <Topbar />
 
-        <main style={{ padding: "20px" }}>
+        <main
+          style={{
+            flex: 1,
+            padding: "30px 40px",
+            overflow: "auto"
+          }}
+        >
           <Outlet />
         </main>
 

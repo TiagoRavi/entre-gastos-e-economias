@@ -1,5 +1,3 @@
-# app/indicators/balance_indicator.py
-
 def calculate_balance(transactions):
 
     income = 0
@@ -13,7 +11,7 @@ def calculate_balance(transactions):
         elif t.type == "expense":
             expenses += t.amount
 
-    balance = income - expenses
+    balance = income + expenses
 
     return {
         "income": income,

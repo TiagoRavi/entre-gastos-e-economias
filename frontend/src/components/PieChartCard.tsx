@@ -21,7 +21,9 @@ const COLORS = [
   "#22c55e",
   "#f59e0b",
   "#ef4444",
-  "#14b8a6"
+  "#14b8a6",
+  "#8b5cf6",
+  "#06b6d4"
 ]
 
 export default function PieChartCard({ data }: Props) {
@@ -32,52 +34,92 @@ export default function PieChartCard({ data }: Props) {
       currency: "BRL",
     })
 
-  const renderLabel = ({ percent }: any) =>
-    `${(percent * 100).toFixed(0)}%`
+  // ordena categorias por valor
+  const sortedData = [...data].sort((a, b) => b.value - a.value)
+
+  // caso não existam dados
+  if (!sortedData || sortedData.length === 0) {
+    return (
+      <div
+        style={{
+          background: "white",
+          padding: "24px",
+          borderRadius: "12px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+          height: 320,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        Nenhuma despesa registrada
+      </div>
+    )
+  }
 
   return (
     <div
       style={{
         background: "white",
-        padding: "20px",
+        padding: "24px",
         borderRadius: "12px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-        height: "300px"
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
       }}
     >
 
-      <h3 style={{ marginBottom: "10px" }}>
+      <h3 style={{ marginBottom: "20px" }}>
         Despesas por categoria
       </h3>
 
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+      <div style={{ width: "100%", height: 280 }}>
 
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            outerRadius={100}
-            label={renderLabel}
-          >
+        <ResponsiveContainer width="100%" height="100%">
 
-            {data.map((entry, index) => (
-              <Cell
-                key={index}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
+          <PieChart>
 
-          </Pie>
+            <Pie
+              data={sortedData}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={95}
+              innerRadius={60}
+              paddingAngle={3}
+              label={({ percent }) =>
+                percent > 0.05
+                  ? `${(percent * 100).toFixed(0)}%`
+                  : ""
+              }
+            >
 
-          <Tooltip
-            formatter={(value: number) => formatCurrency(value)}
-          />
+              {sortedData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
 
-          <Legend />
+            </Pie>
 
-        </PieChart>
-      </ResponsiveContainer>
+            <Tooltip
+              formatter={(value: number) => formatCurrency(value)}
+              contentStyle={{
+                borderRadius: "8px",
+                border: "none",
+                boxShadow: "0 6px 20px rgba(0,0,0,0.08)"
+              }}
+            />
+
+            <Legend
+              verticalAlign="bottom"
+              iconType="circle"
+              wrapperStyle={{ marginTop: 10 }}
+            />
+
+          </PieChart>
+
+        </ResponsiveContainer>
+
+      </div>
 
     </div>
   )

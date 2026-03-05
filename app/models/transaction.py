@@ -1,7 +1,5 @@
-# app/models/transaction.py
-
 from sqlalchemy import Column, String, Integer, ForeignKey, Date, Numeric
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 
 from app.models.base import BaseModel
 
@@ -47,6 +45,13 @@ class Transaction(BaseModel):
         nullable=False
     )
 
+    # NOVO CAMPO
+    status = Column(
+        String(20),
+        nullable=False,
+        default="pending"
+    )
+
     # Relationships
 
     user = relationship(
@@ -63,3 +68,18 @@ class Transaction(BaseModel):
         "Category",
         back_populates="transactions"
     )
+
+    # -----------------------------
+    # VALIDAÇÃO DE RECEITA/DESPESA
+    # -----------------------------
+
+    @validates("amount")
+    def validate_amount(self, key, value):
+
+        if self.type == "income" and value < 0:
+            raise ValueError("Receita deve ser um valor positivo.")
+
+        if self.type == "expense" and value > 0:
+            raise ValueError("Despesa deve ser um valor negativo.")
+
+        return value
