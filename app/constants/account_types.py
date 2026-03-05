@@ -1,0 +1,14 @@
+# app/constants/account_types.py
+
+ACCOUNT_TYPE_CHECKING = "checking"
+ACCOUNT_TYPE_SAVINGS = "savings"
+ACCOUNT_TYPE_CASH = "cash"
+ACCOUNT_TYPE_CREDIT = "credit"
+
+
+ACCOUNT_TYPES = {
+    ACCOUNT_TYPE_CHECKING,
+    ACCOUNT_TYPE_SAVINGS,
+    ACCOUNT_TYPE_CASH,
+    ACCOUNT_TYPE_CREDIT
+}

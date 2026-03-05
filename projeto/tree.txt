@@ -1,0 +1,147 @@
+finance-control/
+│
+├── docker/
+│   ├── Dockerfile
+│   └── entrypoint.sh
+│
+├── docker-compose.yml
+├── requirements.txt
+├── alembic.ini
+│
+├── .env
+├── .env.example
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── security.py
+│   │   ├── dependencies.py
+│   │   └── logging.py
+│
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── user.py
+│   │   ├── account.py
+│   │   ├── category.py
+│   │   ├── transaction.py
+│   │   └── budget.py
+│
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   ├── user_schema.py
+│   │   ├── account_schema.py
+│   │   ├── category_schema.py
+│   │   ├── transaction_schema.py
+│   │   └── budget_schema.py
+│
+│   ├── repositories/
+│   │   ├── __init__.py
+│   │   ├── user_repository.py
+│   │   ├── account_repository.py
+│   │   ├── category_repository.py
+│   │   ├── transaction_repository.py
+│   │   └── budget_repository.py
+│
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── auth_service.py
+│   │   ├── user_service.py
+│   │   ├── account_service.py
+│   │   ├── category_service.py
+│   │   ├── transaction_service.py
+│   │   ├── budget_service.py
+│   │   ├── indicator_service.py
+│   │   └── report_service.py
+│
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── router.py
+│   │
+│   │   └── v1/
+│   │       ├── __init__.py
+│   │       ├── auth_routes.py
+│   │       ├── user_routes.py
+│   │       ├── account_routes.py
+│   │       ├── category_routes.py
+│   │       ├── transaction_routes.py
+│   │       ├── budget_routes.py
+│   │       └── indicator_routes.py
+│
+│   ├── indicators/
+│   │   ├── __init__.py
+│   │   ├── balance_indicator.py
+│   │   ├── expense_indicator.py
+│   │   ├── savings_indicator.py
+│   │   └── projection_indicator.py
+│
+│   ├── constants/
+│   │   ├── __init__.py
+│   │   ├── account_types.py
+│   │   ├── category_types.py
+│   │   └── transaction_types.py
+│
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── date_utils.py
+│   │   ├── money_utils.py
+│   │   └── pagination.py
+│
+│   └── tests/
+│       ├── __init__.py
+│       ├── test_accounts.py
+│       ├── test_transactions.py
+│       └── test_indicators.py
+│
+└── migrations/
+    ├── env.py
+    ├── script.py.mako
+    ├── README
+    │
+    └── versions/
+        └── f87b9969002f_initial_tables.py
+
+src
+├── api
+│   └ client.ts OK
+│
+├── components
+│   ├ Card.tsx
+│   ├ Sidebar.tsx
+│   ├ Topbar.tsx  OK
+│   └ TransactionItem.tsx
+│
+├── context
+│   └ AuthContext.tsx
+│
+├── hooks
+│   ├ useAccounts.ts
+│   ├ useCategories.ts
+│   └ useTransactions.ts
+│
+├── layouts
+│   └ DashboardLayout.tsx
+│
+├── pages
+│   ├ Dashboard.tsx
+│   ├ Accounts.tsx  OK
+│   ├ Transactions.tsx
+│   ├ Categories.tsx
+│   ├ Login.tsx
+│   └ Register.tsx
+│
+├── routes
+│   └ ProtectedRoute.tsx
+│
+├── types
+│   ├ account.ts
+│   ├ category.ts
+│   └ transaction.ts
+│
+├── App.tsx
+└── main.tsx

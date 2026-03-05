@@ -1,0 +1,32 @@
+# =========================
+# WEB / API
+# =========================
+fastapi
+uvicorn[standard]
+python-multipart
+
+# =========================
+# DATABASE
+# =========================
+sqlalchemy
+psycopg2-binary
+alembic
+
+# =========================
+# CONFIGURAÇÃO
+# =========================
+python-dotenv
+pydantic
+pydantic-settings
+
+# =========================
+# AUTENTICAÇÃO / SEGURANÇA
+# =========================
+passlib[bcrypt]
+bcrypt==4.0.1
+python-jose[cryptography]
+
+# =========================
+# VALIDAÇÃO
+# =========================
+email-validator
