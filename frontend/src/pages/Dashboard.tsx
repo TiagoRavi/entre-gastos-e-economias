@@ -145,12 +145,6 @@ export default function Dashboard() {
           marginBottom: "40px"
         }}
       >
-
-        <Card
-          title="Saldo"
-          value={currencyFormatter.format(balance?.balance ?? 0)}
-        />
-
         <Card
           title="Receitas"
           value={currencyFormatter.format(balance?.income ?? 0)}
@@ -159,6 +153,11 @@ export default function Dashboard() {
         <Card
           title="Despesas"
           value={currencyFormatter.format(balance?.expenses ?? 0)}
+        />
+
+        <Card
+          title="Resultado"
+          value={currencyFormatter.format(balance?.balance ?? 0)}
         />
 
       </div>
@@ -173,7 +172,7 @@ export default function Dashboard() {
         }}
       >
         <AccountsDashboardCard />
-        
+
         <LineChartCard data={lineData} />
 
         <PieChartCard data={pieData} />

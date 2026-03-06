@@ -5,13 +5,17 @@ def calculate_balance(transactions):
 
     for t in transactions:
 
+        # ignora transferências
+        if "transfer" in (t.description or "").lower():
+            continue
+
         if t.type == "income":
-            income += t.amount
+            income += float(t.amount)
 
         elif t.type == "expense":
-            expenses += t.amount
+            expenses += abs(float(t.amount))
 
-    balance = income + expenses
+    balance = income - expenses
 
     return {
         "income": income,

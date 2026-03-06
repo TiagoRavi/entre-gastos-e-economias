@@ -23,10 +23,10 @@ def calculate_monthly_cashflow(transactions, month=None):
         m = t.date.strftime("%b")
 
         if t.type == "income":
-            monthly[m]["income"] += t.amount
+            monthly[m]["income"] += float(t.amount)
 
         elif t.type == "expense":
-            monthly[m]["expense"] += t.amount
+            monthly[m]["expense"] += float(t.amount)
 
     result = []
 
