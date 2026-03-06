@@ -8,6 +8,7 @@ from app.api.v1 import (
     transaction_routes,
     budget_routes,
     indicator_routes,
+    transfer_routes,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -19,3 +20,4 @@ api_router.include_router(category_routes.router)
 api_router.include_router(transaction_routes.router)
 api_router.include_router(budget_routes.router)
 api_router.include_router(indicator_routes.router)
+api_router.include_router(transfer_routes.router)

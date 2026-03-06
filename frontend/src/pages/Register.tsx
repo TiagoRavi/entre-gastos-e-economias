@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { api } from "../api/client"
+import "../styles/auth.css"
 
 export default function Register() {
   const navigate = useNavigate()
@@ -35,40 +36,60 @@ export default function Register() {
   }
 
   return (
-    <div>
-      <h1>Register</h1>
+    <div className="auth-container">
 
-      <form onSubmit={handleSubmit}>
+      <div className="auth-card">
 
-        <input
-          type="text"
-          placeholder="Nome"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        <h1>Crie sua conta</h1>
+        <p>Preencha os dados para continuar</p>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <form onSubmit={handleSubmit}>
 
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          <div className="input-group">
+            <span className="icon">👤</span>
+            <input
+              type="text"
+              placeholder="Nome"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Criando..." : "Registrar"}
-        </button>
+          <div className="input-group">
+            <span className="icon">📧</span>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-      </form>
+          <div className="input-group">
+            <span className="icon">🔒</span>
+            <input
+              type="password"
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button className="auth-button" type="submit" disabled={loading}>
+            {loading ? "Criando..." : "Criar conta"}
+          </button>
+
+        </form>
+
+        <p className="auth-footer">
+          Já tem conta? <span onClick={() => navigate("/login")}>Entrar</span>
+        </p>
+
+      </div>
+
     </div>
   )
 }

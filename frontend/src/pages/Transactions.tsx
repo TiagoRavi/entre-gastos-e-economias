@@ -46,6 +46,13 @@ export default function Transactions() {
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   const [totalPages, setTotalPages] = useState(1)
+  const [openTransferModal, setOpenTransferModal] = useState(false)
+  
+  const [transferFrom, setTransferFrom] = useState("")
+  const [transferTo, setTransferTo] = useState("")
+  const [transferAmount, setTransferAmount] = useState("")
+  const [transferDate, setTransferDate] = useState(today)
+  const [transferDescription, setTransferDescription] = useState("")
 
   useEffect(() => {
     loadData()
@@ -146,6 +153,41 @@ export default function Transactions() {
 
   }
 
+  const createTransfer = async () => {
+
+  if (!transferFrom || !transferTo || !transferAmount) return
+
+  if (transferFrom === transferTo) {
+    alert("Conta origem e destino não podem ser iguais")
+    return
+  }
+
+  try {
+
+    await api.post("/transfers/", {
+      from_account_id: Number(transferFrom),
+      to_account_id: Number(transferTo),
+      amount: Number(transferAmount),
+      description: transferDescription,
+      date: transferDate
+    })
+
+    setTransferFrom("")
+    setTransferTo("")
+    setTransferAmount("")
+    setTransferDescription("")
+    setTransferDate(today)
+
+    await loadTransactions()
+
+    setOpenTransferModal(false)
+
+  } catch (error) {
+    console.error("Erro ao transferir", error)
+  }
+
+}
+
   const deleteTransaction = async (id: number) => {
 
     if (!confirm("Deseja excluir esta transação?")) return
@@ -236,6 +278,18 @@ export default function Transactions() {
       >
         <h1>Transações</h1>
 
+<div style={{ display: "flex", gap: "10px" }}>
+
+  <button
+    className="button-secondary"
+    onClick={(e) => {
+      e.stopPropagation()
+      setOpenTransferModal(true)
+    }}
+  >
+    ⇄ Transferência
+        </button>
+
         <button
           className="button-primary"
           onClick={(e) => {
@@ -245,7 +299,9 @@ export default function Transactions() {
         >
           + Nova Transação
         </button>
+
       </div>
+    </div>
 
       {/* TABELA */}
 
@@ -578,6 +634,128 @@ export default function Transactions() {
 
         </div>
 
+            )}
+
+      {/* MODAL TRANSFERÊNCIA */}
+
+      {openTransferModal && (
+
+        <div className="modal-overlay" onClick={() => setOpenTransferModal(false)}>
+
+          <div
+            className="modal-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+
+            <div className="modal-header">
+              <h2>Transferência</h2>
+
+              <button
+                className="modal-close"
+                onClick={() => setOpenTransferModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="modal-grid">
+
+              <div className="form-group">
+                <label>Conta origem</label>
+
+                <select
+                  value={transferFrom}
+                  onChange={(e) => setTransferFrom(e.target.value)}
+                >
+                  <option value="">Selecione</option>
+
+                  {accounts.map(acc => (
+                    <option key={acc.id} value={acc.id}>
+                      {acc.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Conta destino</label>
+
+                <select
+                  value={transferTo}
+                  onChange={(e) => setTransferTo(e.target.value)}
+                >
+                  <option value="">Selecione</option>
+
+                  {accounts.map(acc => (
+                    <option key={acc.id} value={acc.id}>
+                      {acc.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Valor</label>
+
+                <input
+                  type="number"
+                  placeholder="0.00"
+                  value={transferAmount}
+                  onChange={(e) => setTransferAmount(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Data</label>
+
+                <input
+                  type="date"
+                  value={transferDate}
+                  onChange={(e) => setTransferDate(e.target.value)}
+                />
+              </div>
+
+            </div>
+
+            <div className="form-group">
+              <label>Descrição</label>
+
+              <input
+                placeholder="Descrição da transferência"
+                value={transferDescription}
+                onChange={(e) => setTransferDescription(e.target.value)}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+                marginTop: "20px"
+              }}
+            >
+
+              <button
+                className="button-secondary"
+                onClick={() => setOpenTransferModal(false)}
+              >
+                Cancelar
+              </button>
+
+              <button
+                className="button-primary"
+                onClick={createTransfer}
+              >
+                Transferir
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
       )}
 
     </div>
@@ -585,3 +763,4 @@ export default function Transactions() {
   )
 
 }
+
