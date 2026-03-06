@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
 import { api } from "../api/client"
+import AccountForm from "../components/AccountForm"
+import AccountList from "../components/AccountList"
 
-interface Account {
+export interface Account {
   id: number
   name: string
   type: string
@@ -11,173 +13,96 @@ interface Account {
 export default function Accounts() {
 
   const [accounts, setAccounts] = useState<Account[]>([])
-  const [name, setName] = useState("")
-  const [type, setType] = useState("bank")
-  const [initialBalance, setInitialBalance] = useState(0)
 
   useEffect(() => {
     loadAccounts()
   }, [])
 
   const loadAccounts = async () => {
-    const response = await api.get("/accounts/")
-    setAccounts(response.data)
+
+    try {
+
+      const response = await api.get("/accounts/")
+
+      setAccounts(response.data)
+
+    } catch (error) {
+
+      console.error("Erro ao carregar contas", error)
+
+    }
+
   }
 
-  const createAccount = async () => {
+  const createAccount = async (data: {
+    name: string
+    type: string
+    initial_balance: number
+  }) => {
 
-    if (!name) return
+    try {
 
-    await api.post("/accounts/", {
-      name,
-      type,
-      initial_balance: initialBalance
-    })
+      await api.post("/accounts/", data)
 
-    setName("")
-    setInitialBalance(0)
+      await loadAccounts()
 
-    loadAccounts()
+    } catch (error) {
+
+      console.error("Erro ao criar conta", error)
+
+    }
+
   }
 
   const deleteAccount = async (id: number) => {
 
-    await api.delete(`/accounts/${id}`)
+    try {
 
-    loadAccounts()
+      await api.delete(`/accounts/${id}`)
+
+      await loadAccounts()
+
+    } catch (error) {
+
+      console.error("Erro ao deletar conta", error)
+
+    }
+
   }
 
-  const formatCurrency = (value: number) =>
-    value.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    })
+  const totalBalance = accounts.reduce(
+    (acc, account) => acc + Number(account.initial_balance || 0),
+    0
+  )
 
-  const accountTypeLabel: Record<string, string> = {
-    bank: "Banco",
-    cash: "Dinheiro",
-    credit_card: "Cartão de Crédito",
-    savings: "Poupança"
-  }
+      return (
 
-  return (
-    <div>
+    <div className="accounts-page">
 
-      <h1 style={{ marginBottom: "20px" }}>
+      <h1 className="page-title">
         Contas
       </h1>
 
-      {/* FORM */}
+      <div className="accounts-top-grid">
 
-      <div
-        style={{
-          marginBottom: "20px",
-          display: "flex",
-          gap: "10px"
-        }}
-      >
-
-        <input
-          placeholder="Nome da conta"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+        <AccountList
+          accounts={accounts}
+          deleteAccount={deleteAccount}
+          totalBalance={totalBalance}
         />
 
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="bank">Banco</option>
-          <option value="cash">Dinheiro</option>
-          <option value="credit_card">Cartão</option>
-          <option value="savings">Poupança</option>
-        </select>
-
-        <input
-          type="number"
-          placeholder="Saldo inicial"
-          value={initialBalance}
-          onChange={(e) => setInitialBalance(Number(e.target.value))}
-        />
-
-        <button onClick={createAccount}>
-          Criar
-        </button>
+        <div className="card">
+          <h3>Movimentação</h3>
+        </div>
 
       </div>
 
-      {/* LISTA */}
-
-      <div
-        style={{
-          background: "white",
-          borderRadius: "12px",
-          padding: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
-        }}
-      >
-
-        {accounts.map((account) => (
-
-          <div
-            key={account.id}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "10px 0",
-              borderBottom: "1px solid #eee"
-            }}
-          >
-
-            <div>
-
-              <div style={{ fontWeight: 500 }}>
-                {account.name}
-              </div>
-
-              <div
-                style={{
-                  fontSize: "12px",
-                  color: "#6b7280"
-                }}
-              >
-                {accountTypeLabel[account.type]}
-              </div>
-
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px"
-              }}
-            >
-
-              <span style={{ fontWeight: "bold" }}>
-                {formatCurrency(account.initial_balance)}
-              </span>
-
-              <button
-                onClick={() => deleteAccount(account.id)}
-                style={{
-                  border: "none",
-                  background: "transparent",
-                  color: "#ef4444",
-                  cursor: "pointer"
-                }}
-              >
-                Excluir
-              </button>
-
-            </div>
-
-          </div>
-
-        ))}
-
+      <div style={{ marginTop: 20 }}>
+        <AccountForm createAccount={createAccount} />
       </div>
 
     </div>
+
   )
+
 }

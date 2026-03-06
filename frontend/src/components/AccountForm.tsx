@@ -1,66 +1,67 @@
 import { useState } from "react"
-import { api } from "../api/client"
 
 interface Props {
-  onCreated?: () => void
+  createAccount: (data: {
+    name: string
+    type: string
+    initial_balance: number
+  }) => void
 }
 
-export default function AccountForm({ onCreated }: Props) {
+export default function AccountForm({ createAccount }: Props) {
 
   const [name, setName] = useState("")
-  const [balance, setBalance] = useState("")
+  const [type, setType] = useState("bank")
+  const [initialBalance, setInitialBalance] = useState(0)
 
-  const createAccount = async () => {
+  const handleSubmit = () => {
 
-    if (!name) return
+    if (!name.trim()) return
 
-    await api.post("/accounts/", {
+    createAccount({
       name,
-      balance: Number(balance)
+      type,
+      initial_balance: initialBalance
     })
 
     setName("")
-    setBalance("")
-
-    onCreated?.()
+    setInitialBalance(0)
   }
 
   return (
-    <div
-      style={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "12px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-        marginBottom: "20px"
-      }}
-    >
 
-      <h3 style={{ marginBottom: "10px" }}>
-        Nova Conta
-      </h3>
+    <div className="card">
 
-      <div style={{ display: "flex", gap: "10px" }}>
+      <h3>Adicionar conta</h3>
 
-        <input
-          placeholder="Nome da conta"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      <input
+        placeholder="Nome da conta"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
-        <input
-          placeholder="Saldo inicial"
-          type="number"
-          value={balance}
-          onChange={(e) => setBalance(e.target.value)}
-        />
+      <select
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+      >
+        <option value="bank">Banco</option>
+        <option value="cash">Dinheiro</option>
+        <option value="credit_card">Cartão</option>
+        <option value="savings">Poupança</option>
+      </select>
 
-        <button onClick={createAccount}>
-          Criar
-        </button>
+      <input
+        type="number"
+        placeholder="Saldo inicial"
+        value={initialBalance}
+        onChange={(e) => setInitialBalance(Number(e.target.value))}
+      />
 
-      </div>
+      <button onClick={handleSubmit}>
+        Criar conta
+      </button>
 
     </div>
+
   )
 }

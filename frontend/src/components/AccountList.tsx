@@ -1,49 +1,43 @@
-import { useEffect, useState } from "react"
-import { api } from "../api/client"
-
 interface Account {
   id: number
   name: string
-  balance: number
+  type: string
+  initial_balance: number
 }
 
-export default function AccountList() {
+interface Props {
+  accounts: Account[]
+  deleteAccount: (id: number) => void
+}
 
-  const [accounts, setAccounts] = useState<Account[]>([])
-
-  const loadAccounts = async () => {
-
-    const response = await api.get("/accounts/")
-    setAccounts(response.data)
-  }
-
-  useEffect(() => {
-    loadAccounts()
-  }, [])
-
-  const deleteAccount = async (id: number) => {
-
-    await api.delete(`/accounts/${id}`)
-    loadAccounts()
-  }
+export default function AccountList({
+  accounts,
+  deleteAccount
+}: Props) {
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
       style: "currency",
-      currency: "BRL",
+      currency: "BRL"
     })
 
-  return (
-    <div
-      style={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "12px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
-      }}
-    >
+  const accountTypeLabel: Record<string, string> = {
+    bank: "Banco",
+    cash: "Dinheiro",
+    credit_card: "Cartão de Crédito",
+    savings: "Poupança"
+  }
 
-      <h3 style={{ marginBottom: "10px" }}>
+  const totalBalance = accounts.reduce(
+    (acc, account) => acc + account.initial_balance,
+    0
+  )
+
+  return (
+
+    <div className="card">
+
+      <h3 style={{ marginBottom: 20 }}>
         Contas
       </h3>
 
@@ -51,28 +45,30 @@ export default function AccountList() {
 
         <div
           key={account.id}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "10px 0",
-            borderBottom: "1px solid #eee"
-          }}
+          className="account-row"
         >
 
-          <span>{account.name}</span>
+          <div>
 
-          <div style={{ display: "flex", gap: "10px" }}>
+            <div className="account-name">
+              {account.name}
+            </div>
 
-            <span>{formatCurrency(account.balance)}</span>
+            <div className="account-type">
+              {accountTypeLabel[account.type]}
+            </div>
+
+          </div>
+
+          <div className="account-actions">
+
+            <span className="balance">
+              {formatCurrency(account.initial_balance)}
+            </span>
 
             <button
+              className="delete-btn"
               onClick={() => deleteAccount(account.id)}
-              style={{
-                border: "none",
-                background: "transparent",
-                color: "#ef4444",
-                cursor: "pointer"
-              }}
             >
               Excluir
             </button>
@@ -83,6 +79,17 @@ export default function AccountList() {
 
       ))}
 
+      <div className="total-row">
+
+        <span>Total</span>
+
+        <strong>
+          {formatCurrency(totalBalance)}
+        </strong>
+
+      </div>
+
     </div>
+
   )
 }
