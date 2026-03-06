@@ -13,37 +13,19 @@ class Budget(BaseModel):
         UniqueConstraint(
             "user_id",
             "category_id",
-            name="uq_user_category_budget"
+            "month",
+            "year",
+            name="uq_user_category_month_budget"
         ),
     )
 
-    user_id = Column(
-        Integer,
-        ForeignKey("users.id"),
-        nullable=False,
-        index=True
-    )
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False, index=True)
 
-    category_id = Column(
-        Integer,
-        ForeignKey("categories.id"),
-        nullable=False,
-        index=True
-    )
+    month = Column(Integer, nullable=False)
+    year = Column(Integer, nullable=False)
 
-    monthly_limit = Column(
-        Numeric(12, 2),
-        nullable=False
-    )
+    monthly_limit = Column(Numeric(12,2), nullable=False)
 
-    # Relationships
-
-    user = relationship(
-        "User",
-        back_populates="budgets"
-    )
-
-    category = relationship(
-        "Category",
-        back_populates="budgets"
-    )
+    user = relationship("User", back_populates="budgets")
+    category = relationship("Category", back_populates="budgets")

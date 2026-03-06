@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard"
 import Accounts from "./pages/Accounts"
 import Categories from "./pages/Categories"
 import Transactions from "./pages/Transactions"
+import Budgets from "./pages/Budgets"
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 import DashboardLayout from "./layouts/DashboardLayout"
@@ -38,6 +39,8 @@ function App() {
           <Route path="/categories" element={<Categories />} />
 
           <Route path="/transactions" element={<Transactions />} />
+
+          <Route path="/budgets" element={<Budgets />} />
 
         </Route>
 

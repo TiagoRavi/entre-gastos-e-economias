@@ -8,7 +8,8 @@ from app.repositories.budget_repository import (
     get_budgets_by_user,
     get_budget_by_category,
     delete_budget,
-    get_budget_by_id
+    get_budget_by_id,
+    get_budget_summary_by_user
 )
 
 from app.repositories.category_repository import get_category_by_id
@@ -33,6 +34,19 @@ def create_user_budget(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized"
+        )
+
+    # 🔹 evita orçamento duplicado
+    existing_budget = get_budget_by_category(
+        db,
+        user_id,
+        category_id
+    )
+
+    if existing_budget:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Budget already exists for this category"
         )
 
     budget = create_budget(
@@ -103,3 +117,18 @@ def check_category_budget(
         return None
 
     return budget.monthly_limit
+
+
+# =========================
+# BUDGET SUMMARY (DASHBOARD)
+# =========================
+
+def get_user_budget_summary(
+    db: Session,
+    user_id: int
+):
+
+    return get_budget_summary_by_user(
+        db,
+        user_id
+    )

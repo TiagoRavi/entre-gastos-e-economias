@@ -1,16 +1,21 @@
-# app/api/v1/budget_routes.py
-
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db, get_current_user
-from app.schemas.budget_schema import BudgetCreate, BudgetResponse
+
+from app.schemas.budget_schema import (
+    BudgetCreate,
+    BudgetResponse,
+    BudgetSummary
+)
+
 from app.schemas.user_schema import UserResponse
 
 from app.services.budget_service import (
     create_user_budget,
     list_user_budgets,
-    remove_user_budget
+    remove_user_budget,
+    get_user_budget_summary
 )
 
 router = APIRouter(
@@ -18,6 +23,10 @@ router = APIRouter(
     tags=["Budgets"]
 )
 
+
+# =========================
+# CREATE BUDGET
+# =========================
 
 @router.post(
     "/",
@@ -38,6 +47,10 @@ def create_budget(
     )
 
 
+# =========================
+# LIST BUDGETS
+# =========================
+
 @router.get(
     "/",
     response_model=list[BudgetResponse]
@@ -52,6 +65,29 @@ def list_budgets(
         user_id=current_user.id
     )
 
+
+# =========================
+# BUDGET SUMMARY (DASHBOARD)
+# =========================
+
+@router.get(
+    "/summary",
+    response_model=list[BudgetSummary]
+)
+def budget_summary(
+    db: Session = Depends(get_db),
+    current_user: UserResponse = Depends(get_current_user)
+):
+
+    return get_user_budget_summary(
+        db=db,
+        user_id=current_user.id
+    )
+
+
+# =========================
+# DELETE BUDGET
+# =========================
 
 @router.delete(
     "/{budget_id}",

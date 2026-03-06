@@ -30,3 +30,8 @@ python-jose[cryptography]
 # VALIDAÇÃO
 # =========================
 email-validator
+
+# =========================
+# UTILIDADES (recomendado)
+# =========================
+python-dateutil
