@@ -4,7 +4,7 @@ import { useCategories } from "../hooks/useCategories"
 
 export default function Budgets() {
 
-  const { budgets, createBudget } = useBudgets()
+  const { budgets, summary, createBudget, deleteBudget } = useBudgets()
   const { categories } = useCategories()
 
   const today = new Date()
@@ -15,6 +15,7 @@ export default function Budgets() {
   const [year, setYear] = useState(today.getFullYear())
 
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault()
 
     if (!categoryId || !limit) return
@@ -30,11 +31,25 @@ export default function Budgets() {
     setLimit("")
   }
 
+  // 🔹 converter Decimal (string) → number
+  const totalBudget = summary.reduce(
+    (acc, s) => acc + Number(s.monthly_limit),
+    0
+  )
+
+  const totalSpent = summary.reduce(
+    (acc, s) => acc + Number(s.spent),
+    0
+  )
+
+  const totalRemaining = totalBudget - totalSpent
+
   return (
     <div>
 
       <h1>Orçamentos</h1>
 
+      {/* FORM */}
       <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
 
         <select
@@ -79,6 +94,124 @@ export default function Budgets() {
         </button>
 
       </form>
+
+
+      {/* CARDS RESUMO */}
+      <div style={{ display: "flex", gap: 20, marginBottom: 30 }}>
+
+        <div>
+          <strong>Total Orçado</strong>
+          <div>R$ {totalBudget.toFixed(2)}</div>
+        </div>
+
+        <div>
+          <strong>Total Gasto</strong>
+          <div>R$ {totalSpent.toFixed(2)}</div>
+        </div>
+
+        <div>
+          <strong>Restante</strong>
+          <div>R$ {totalRemaining.toFixed(2)}</div>
+        </div>
+
+      </div>
+
+
+      {/* LISTA DE ORÇAMENTOS */}
+      <h2>Orçamentos criados</h2>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Limite</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          {budgets.map((b) => (
+
+            <tr key={b.id}>
+
+              <td>{b.category_name}</td>
+
+              <td>
+                R$ {Number(b.monthly_limit).toFixed(2)}
+              </td>
+
+              <td>
+                <button onClick={() => deleteBudget(b.id)}>
+                  Remover
+                </button>
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+
+      {/* STATUS DO ORÇAMENTO */}
+      <h2>Status do orçamento</h2>
+
+      <div style={{ display: "grid", gap: 20 }}>
+
+        {summary.map((s) => {
+
+          const percent = Number(s.percentage)
+
+          let color = "#22c55e"
+
+          if (percent > 90) color = "#ef4444"
+          else if (percent > 70) color = "#f59e0b"
+
+          return (
+
+            <div
+              key={s.category_id}
+              style={{
+                border: "1px solid #ddd",
+                padding: 16,
+                borderRadius: 8
+              }}
+            >
+
+              <strong>{s.category_name}</strong>
+
+              <div>
+                {Number(s.spent).toFixed(2)} / {Number(s.monthly_limit).toFixed(2)}
+              </div>
+
+              <div>
+                Restante: R$ {Number(s.remaining).toFixed(2)}
+              </div>
+
+              <progress
+                value={percent}
+                max={100}
+                style={{
+                  width: "100%",
+                  accentColor: color
+                }}
+              />
+
+              <div>
+                {percent.toFixed(0)}%
+              </div>
+
+            </div>
+
+          )
+
+        })}
+
+      </div>
 
     </div>
   )

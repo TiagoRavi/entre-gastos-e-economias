@@ -13,6 +13,8 @@ class BudgetCreate(BaseModel):
 
     category_id: int
     monthly_limit: Decimal
+    month: int
+    year: int
 
     @field_validator("monthly_limit")
     @classmethod
@@ -49,11 +51,9 @@ class BudgetSummary(BaseModel):
 
     category_id: int
     category_name: str
-
     monthly_limit: Decimal
     spent: Decimal
     remaining: Decimal
-
     percentage: float
 
     model_config = {

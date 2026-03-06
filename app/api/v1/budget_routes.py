@@ -43,9 +43,10 @@ def create_budget(
         db=db,
         user_id=current_user.id,
         category_id=budget_data.category_id,
-        monthly_limit=budget_data.monthly_limit
+        monthly_limit=budget_data.monthly_limit,
+        month=budget_data.month,
+        year=budget_data.year
     )
-
 
 # =========================
 # LIST BUDGETS

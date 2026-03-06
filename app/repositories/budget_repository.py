@@ -10,20 +10,29 @@ def create_budget(
     db: Session,
     user_id: int,
     category_id: int,
-    monthly_limit
+    monthly_limit,
+    month: int,
+    year: int
 ) -> Budget:
 
     budget = Budget(
         user_id=user_id,
         category_id=category_id,
-        monthly_limit=monthly_limit
+        monthly_limit=monthly_limit,
+        month=month,
+        year=year
     )
 
     db.add(budget)
     db.commit()
     db.refresh(budget)
 
-    return budget
+    return (
+        db.query(Budget)
+        .options(joinedload(Budget.category))
+        .filter(Budget.id == budget.id)
+        .first()
+    )
 
 
 def get_budgets_by_user(
@@ -55,14 +64,18 @@ def get_budget_by_id(
 def get_budget_by_category(
     db: Session,
     user_id: int,
-    category_id: int
+    category_id: int,
+    month: int,
+    year: int
 ):
 
     return (
         db.query(Budget)
         .filter(
             Budget.user_id == user_id,
-            Budget.category_id == category_id
+            Budget.category_id == category_id,
+            Budget.month == month,
+            Budget.year == year
         )
         .first()
     )
@@ -102,18 +115,23 @@ def get_budget_summary_by_user(
             Category.id.label("category_id"),
             Category.name.label("category_name"),
             Budget.monthly_limit,
-            func.coalesce(func.sum(Transaction.amount), 0).label("spent")
+            func.coalesce(func.sum(func.abs(Transaction.amount)), 0).label("spent")
         )
         .join(Category, Category.id == Budget.category_id)
         .outerjoin(
             Transaction,
             (Transaction.category_id == Category.id)
             & (Transaction.user_id == user_id)
+            & (Transaction.type == "expense")
+            & (func.extract("month", Transaction.date) == Budget.month)
+            & (func.extract("year", Transaction.date) == Budget.year)
         )
         .filter(Budget.user_id == user_id)
         .group_by(
             Category.id,
             Category.name,
+            Budget.month,
+            Budget.year,
             Budget.monthly_limit
         )
         .all()

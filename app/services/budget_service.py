@@ -19,7 +19,9 @@ def create_user_budget(
     db: Session,
     user_id: int,
     category_id: int,
-    monthly_limit: float
+    monthly_limit: float,
+    month: int,
+    year: int
 ):
 
     category = get_category_by_id(db, category_id)
@@ -36,27 +38,37 @@ def create_user_budget(
             detail="Not authorized"
         )
 
-    # 🔹 evita orçamento duplicado
+    # 🔹 evita orçamento duplicado por categoria + mês + ano
     existing_budget = get_budget_by_category(
         db,
         user_id,
-        category_id
+        category_id,
+        month,
+        year
     )
 
     if existing_budget:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Budget already exists for this category"
+            detail="Budget already exists for this category in this month"
         )
 
     budget = create_budget(
         db=db,
         user_id=user_id,
         category_id=category_id,
-        monthly_limit=monthly_limit
+        monthly_limit=monthly_limit,
+        month=month,
+        year=year
     )
 
-    return budget
+    return {
+        "id": budget.id,
+        "category_id": budget.category_id,
+        "category_name": category.name,
+        "monthly_limit": budget.monthly_limit,
+        "created_at": budget.created_at
+    }
 
 
 def list_user_budgets(
@@ -64,10 +76,24 @@ def list_user_budgets(
     user_id: int
 ):
 
-    return get_budgets_by_user(
+    budgets = get_budgets_by_user(
         db,
         user_id
     )
+
+    result = []
+
+    for budget in budgets:
+
+        result.append({
+            "id": budget.id,
+            "category_id": budget.category_id,
+            "category_name": budget.category.name,
+            "monthly_limit": budget.monthly_limit,
+            "created_at": budget.created_at
+        })
+
+    return result
 
 
 def remove_user_budget(
@@ -104,13 +130,17 @@ def remove_user_budget(
 def check_category_budget(
     db: Session,
     user_id: int,
-    category_id: int
+    category_id: int,
+    month: int,
+    year: int
 ):
 
     budget = get_budget_by_category(
         db,
         user_id,
-        category_id
+        category_id,
+        month,
+        year
     )
 
     if not budget:
