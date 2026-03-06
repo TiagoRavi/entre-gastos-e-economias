@@ -2,6 +2,8 @@
 
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
+from sqlalchemy import func
+from app.models.transaction import Transaction
 
 from app.repositories.account_repository import (
     create_account,
@@ -29,13 +31,35 @@ def create_user_account(
 
     return account
 
-
 def list_user_accounts(db: Session, user_id: int):
 
     accounts = get_accounts_by_user(db, user_id)
 
-    return accounts
+    result = []
 
+    for account in accounts:
+
+        income = db.query(
+            func.coalesce(func.sum(Transaction.amount), 0)
+        ).filter(
+            Transaction.account_id == account.id,
+            Transaction.type == "income"
+        ).scalar()
+
+        expense = db.query(
+            func.coalesce(func.sum(Transaction.amount), 0)
+        ).filter(
+            Transaction.account_id == account.id,
+            Transaction.type == "expense"
+        ).scalar()
+
+        balance = account.initial_balance + income + expense
+
+        account.balance = balance
+
+        result.append(account)
+
+    return result
 
 def remove_user_account(
     db: Session,

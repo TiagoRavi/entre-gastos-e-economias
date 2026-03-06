@@ -15,6 +15,7 @@ class AccountResponse(BaseModel):
     name: str
     type: str
     initial_balance: float
+    balance: float
     created_at: datetime
 
     class Config:

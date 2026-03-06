@@ -1,44 +1,25 @@
-import { useEffect, useState } from "react"
-import { api } from "../api/client"
-
-interface Account {
-  id: number
-  name: string
-  initial_balance: number
-}
+import { useAccounts } from "../hooks/useAccounts"
 
 export default function AccountsDashboardCard() {
 
-  const [accounts, setAccounts] = useState<Account[]>([])
+  const { accounts, loading } = useAccounts()
 
-  useEffect(() => {
-    loadAccounts()
-  }, [])
-
-  const loadAccounts = async () => {
-
-    try {
-
-      const res = await api.get("/accounts/")
-
-      setAccounts(res.data)
-
-    } catch (error) {
-
-      console.error("Erro ao carregar contas", error)
-
-    }
-
-  }
-
-  const formatCurrency = (value: number) =>
-    value.toLocaleString("pt-BR", {
+  const formatCurrency = (value?: number) =>
+    (value ?? 0).toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL"
     })
 
+  if (loading) {
+    return (
+      <div className="card">
+        Carregando contas...
+      </div>
+    )
+  }
+
   const total = accounts.reduce(
-    (acc, account) => acc + Number(account.initial_balance || 0),
+    (acc, account) => acc + Number(account.balance),
     0
   )
 
@@ -65,7 +46,7 @@ export default function AccountsDashboardCard() {
           <span>{account.name}</span>
 
           <strong>
-            {formatCurrency(account.initial_balance)}
+            {formatCurrency(account.balance)}
           </strong>
 
         </div>
