@@ -4,6 +4,7 @@ import Card from "../components/Card"
 import LineChartCard from "../components/LineChartCard"
 import PieChartCard from "../components/PieChartCard"
 import MonthPickerCard from "../components/MonthPickerCard"
+import AccountsDashboardCard from "../components/AccountsDashboardCard"
 
 interface Balance {
   income: number
@@ -39,6 +40,7 @@ export default function Dashboard() {
   const [lineData, setLineData] = useState<Cashflow[]>([])
   const [pieData, setPieData] = useState<PieData[]>([])
   const [loading, setLoading] = useState(true)
+  const [categories, setCategories] = useState<any[]>([])
 
   const currencyFormatter = useMemo(() => {
     return new Intl.NumberFormat("pt-BR", {
@@ -53,10 +55,11 @@ export default function Dashboard() {
 
       setLoading(true)
 
-      const [balanceRes, monthlyRes, expenseRes] = await Promise.all([
+      const [balanceRes, monthlyRes, expenseRes, categoriesRes] = await Promise.all([
         api.get("/indicators/balance", { params: period }),
         api.get("/indicators/monthly-cashflow", { params: period }),
-        api.get("/indicators/expenses-by-category", { params: period })
+        api.get("/indicators/expenses-by-category", { params: period }),
+        api.get("/categories")
       ])
 
       setBalance(balanceRes.data)
@@ -70,10 +73,17 @@ export default function Dashboard() {
       setLineData(monthly)
 
       const pie: PieData[] = Object.entries(expenseRes.data || {}).map(
-        ([name, value]) => ({
-          name,
-          value: Math.abs(Number(value || 0))
-        })
+        ([categoryId, value]) => {
+
+          const category = categoriesRes.data.find(
+            (c: any) => c.id === Number(categoryId)
+          )
+
+          return {
+            name: category?.name || "Categoria",
+            value: Math.abs(Number(value || 0))
+          }
+        }
       )
 
       setPieData(pie)
@@ -162,7 +172,8 @@ export default function Dashboard() {
           gap: "20px"
         }}
       >
-
+        <AccountsDashboardCard />
+        
         <LineChartCard data={lineData} />
 
         <PieChartCard data={pieData} />

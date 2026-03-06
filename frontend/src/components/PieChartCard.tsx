@@ -112,7 +112,11 @@ export default function PieChartCard({ data }: Props) {
             <Legend
               verticalAlign="bottom"
               iconType="circle"
-              wrapperStyle={{ marginTop: 10 }}
+              formatter={(value: string) => (
+                <span style={{ color: "#374151", fontSize: 13 }}>
+                  {value}
+                </span>
+              )}
             />
 
           </PieChart>
