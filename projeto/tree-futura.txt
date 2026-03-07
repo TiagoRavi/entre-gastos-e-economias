@@ -106,18 +106,18 @@ src
 │   │
 │   ├── transactions
 │   │   ├── pages
-│   │   │   └── Transactions.tsx
+│   │   │   └── Transactions.tsx OK
 │   │   ├── components
-│   │   │   ├── TransactionItem.tsx
-│   │   │   ├── TransactionListCard.tsx
-│   │   │   ├── TransactionModal.tsx
+│   │   │   ├── TransactionItem.tsx OK
+│   │   │   ├── TransactionListCard.tsx OK
+│   │   │   ├── TransactionModal.tsx OK
 │   │   │   ├── TransferModal.tsx
 │   │   │   ├── TransactionsHeader.tsx
 │   │   │   ├── TransactionsTable.tsx
 │   │   │   ├── TransactionsPagination.tsx
 │   │   │   └── TransactionActionsMenu.tsx
 │   │   ├── hooks
-│   │   │   ├── useTransactions.ts
+│   │   │   ├── useTransactions.ts OK
 │   │   │   ├── useCreateTransaction.ts
 │   │   │   └── useTransfer.ts
 │   │   ├── services
@@ -130,9 +130,9 @@ src
 │   │
 │   ├── categories
 │   │   ├── pages
-│   │   │   └── Categories.tsx
+│   │   │   └── Categories.tsx OK
 │   │   ├── hooks
-│   │   │   └── useCategories.ts
+│   │   │   └── useCategories.ts OK
 │   │   ├── services
 │   │   │   └── categoriesService.ts
 │   │   └── types

@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { useBudgets } from "../shared/hooks/useBudgets"
-import { useCategories } from "../shared/hooks/useCategories"
+import { useBudgets } from "../hooks/useBudgets"
+import { useCategories } from "../../categories/hooks/useCategories"
 
 export default function Budgets() {
 

@@ -6,7 +6,7 @@ import Dashboard from "../features/dashboard/pages/Dashboard"
 import Accounts from "../pages/Accounts"
 import Categories from "../pages/Categories"
 import Transactions from "../pages/Transactions"
-import Budgets from "../pages/Budgets"
+import Budgets from "../features/budgets/pages/Budgets"
 import ProtectedRoute from "../routes/ProtectedRoute"
 import DashboardLayout from "../layouts/DashboardLayout"
 
