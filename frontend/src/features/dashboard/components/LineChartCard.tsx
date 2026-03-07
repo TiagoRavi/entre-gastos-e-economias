@@ -38,39 +38,25 @@ export default function LineChartCard({ data }: Props) {
     return months[m] || value
   }
 
-  // fallback quando não houver dados
   if (!data || data.length === 0) {
     return (
-      <div
-        style={{
-          background: "white",
-          padding: "24px",
-          borderRadius: "12px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-          height: 320,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div style={emptyCard}>
         Nenhum dado disponível
       </div>
     )
   }
 
   return (
-    <div
-      style={{
-        background: "white",
-        padding: "24px",
-        borderRadius: "12px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
-      }}
-    >
+    <div style={cardStyle}>
 
-      <h3 style={{ marginBottom: "20px" }}>
-        Receita vs Despesa
-      </h3>
+      <div style={header}>
+        <div>
+          <h3 style={title}>Receita vs Despesa</h3>
+          <span style={subtitle}>
+            Comparação mensal de entradas e saídas
+          </span>
+        </div>
+      </div>
 
       <div style={{ width: "100%", height: 280 }}>
 
@@ -81,30 +67,38 @@ export default function LineChartCard({ data }: Props) {
             margin={{ top: 10, right: 20, left: 10, bottom: 0 }}
           >
 
-            <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
+            <CartesianGrid
+              strokeDasharray="4 4"
+              stroke="#e2e8f0"
+            />
 
             <XAxis
               dataKey="month"
               tickFormatter={formatMonth}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "#64748b" }}
+              axisLine={false}
+              tickLine={false}
             />
 
             <YAxis
               tickFormatter={(value) => formatCurrency(value)}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "#64748b" }}
+              axisLine={false}
+              tickLine={false}
             />
 
             <Tooltip
               formatter={(value: number) => formatCurrency(value)}
               labelFormatter={(label) => formatMonth(label)}
-              contentStyle={{
-                borderRadius: "8px",
-                border: "none",
-                boxShadow: "0 6px 20px rgba(0,0,0,0.08)"
-              }}
+              contentStyle={tooltipStyle}
             />
 
-            <Legend />
+            <Legend
+              wrapperStyle={{
+                fontSize: "13px",
+                marginTop: "10px"
+              }}
+            />
 
             <Line
               type="monotone"
@@ -112,7 +106,7 @@ export default function LineChartCard({ data }: Props) {
               name="Receitas"
               stroke="#16a34a"
               strokeWidth={3}
-              dot={{ r: 4 }}
+              dot={{ r: 3 }}
               activeDot={{ r: 6 }}
             />
 
@@ -120,9 +114,9 @@ export default function LineChartCard({ data }: Props) {
               type="monotone"
               dataKey="expense"
               name="Despesas"
-              stroke="#dc2626"
+              stroke="#ef4444"
               strokeWidth={3}
-              dot={{ r: 4 }}
+              dot={{ r: 3 }}
               activeDot={{ r: 6 }}
             />
 
@@ -134,4 +128,51 @@ export default function LineChartCard({ data }: Props) {
 
     </div>
   )
+}
+
+const cardStyle = {
+  background: "white",
+  padding: "24px",
+  borderRadius: "18px",
+  boxShadow: "0 12px 30px rgba(15,23,42,0.06)",
+  border: "1px solid rgba(15,23,42,0.06)"
+}
+
+const header = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "18px"
+}
+
+const title = {
+  fontSize: "16px",
+  fontWeight: 700,
+  margin: 0,
+  color: "#0f172a"
+}
+
+const subtitle = {
+  fontSize: "13px",
+  color: "#64748b"
+}
+
+const tooltipStyle = {
+  borderRadius: "10px",
+  border: "none",
+  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+  fontSize: "13px"
+}
+
+const emptyCard = {
+  background: "white",
+  padding: "24px",
+  borderRadius: "18px",
+  boxShadow: "0 12px 30px rgba(15,23,42,0.06)",
+  height: 320,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#64748b",
+  fontWeight: 500
 }

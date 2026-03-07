@@ -1,11 +1,11 @@
-import { useTopExpenses } from "../hooks/useTopExpenses"
+import { useTopIncomes } from "../hooks/useTopIncomes"
 
 interface Props {
   month: string
 }
 
-export default function TopExpensesCard({ month }: Props) {
-  const { expenses, loading } = useTopExpenses(month)
+export default function TopIncomesCard({ month }: Props) {
+  const { incomes, loading } = useTopIncomes(month)
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
@@ -16,44 +16,47 @@ export default function TopExpensesCard({ month }: Props) {
   if (loading) {
     return (
       <div className="card">
-        Carregando maiores despesas...
+        Carregando maiores receitas...
       </div>
     )
   }
 
-  const total = expenses.reduce((acc, expense) => acc + Number(expense.amount), 0)
+  const total = incomes.reduce((acc, income) => acc + Number(income.amount), 0)
 
   return (
     <div className="card">
       <div style={header}>
-        <h3 style={title}>Maiores despesas</h3>
-        <span style={badge}>{expenses.length}</span>
+        <h3 style={title}>Maiores receitas</h3>
+        <span style={badge}>{incomes.length}</span>
       </div>
 
       <div style={list}>
-        {expenses.length === 0 && (
+        {incomes.length === 0 && (
           <div style={emptyState}>
-            Nenhuma despesa encontrada
+            Nenhuma receita encontrada
           </div>
         )}
 
-        {expenses.map((expense, index) => (
+        {incomes.map((income, index) => (
           <div
-            key={index}
+            key={income.id ?? index}
             style={row}
           >
             <div style={leftContent}>
-              <span style={expenseName}>{expense.category}</span>
+              <span style={incomeDot} />
+              <span style={incomeName}>
+                {income.category || income.description || "Receita"}
+              </span>
             </div>
 
             <strong style={amount}>
-              {formatCurrency(expense.amount)}
+              {formatCurrency(Number(income.amount))}
             </strong>
           </div>
         ))}
       </div>
 
-      {expenses.length > 0 && (
+      {incomes.length > 0 && (
         <div style={footer}>
           <span style={footerLabel}>Total listado</span>
           <span style={footerValue}>{formatCurrency(total)}</span>
@@ -81,8 +84,8 @@ const badge = {
   fontSize: "12px",
   padding: "4px 8px",
   borderRadius: "999px",
-  background: "#fef2f2",
-  color: "#dc2626",
+  background: "#ecfdf5",
+  color: "#16a34a",
   fontWeight: 700
 }
 
@@ -107,14 +110,23 @@ const leftContent = {
   minWidth: 0
 }
 
-const expenseName = {
+const incomeDot = {
+  width: "8px",
+  height: "8px",
+  borderRadius: "999px",
+  background: "#16a34a",
+  boxShadow: "0 0 10px rgba(22,163,74,0.35)",
+  flexShrink: 0
+}
+
+const incomeName = {
   color: "#334155",
   fontWeight: 600,
   fontSize: "14px"
 }
 
 const amount = {
-  color: "#ef4444",
+  color: "#16a34a",
   fontWeight: 700,
   fontSize: "14px"
 }
@@ -143,5 +155,5 @@ const footerLabel = {
 const footerValue = {
   fontSize: "14px",
   fontWeight: 800,
-  color: "#dc2626"
+  color: "#16a34a"
 }

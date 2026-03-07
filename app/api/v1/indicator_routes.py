@@ -10,7 +10,8 @@ from app.services.indicator_service import (
     get_savings_indicator,
     get_projection_indicator,
     get_monthly_cashflow_indicator,
-    get_top_expenses_indicator
+    get_top_expenses_indicator,
+    get_top_incomes_indicator,
 )
 
 router = APIRouter(
@@ -101,6 +102,20 @@ def top_expenses(
     current_user = Depends(get_current_user)
 ):
     return get_top_expenses_indicator(
+        db,
+        current_user.id,
+        period=period,
+        month=month
+    )
+
+@router.get("/top-incomes")
+def top_incomes(
+    period: Optional[str] = Query(None),
+    month: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return get_top_incomes_indicator(
         db,
         current_user.id,
         period=period,
