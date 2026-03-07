@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { api } from "../api/client"
-import Card from "../components/Card"
+import Card from "../shared/components/ui/Card"
 import LineChartCard from "../components/LineChartCard"
 import PieChartCard from "../components/PieChartCard"
 import MonthPickerCard from "../components/MonthPickerCard"
