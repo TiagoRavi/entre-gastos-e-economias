@@ -9,18 +9,18 @@ src
 │   └── endpoints.ts ok 
 │
 ├── layouts
-│   └── DashboardLayout.tsx
+│   └── DashboardLayout.tsx OK
 │
 ├── routes
-│   └── ProtectedRoute.tsx
+│   └── ProtectedRoute.tsx OK
 │
 ├── context
-│   └── AuthContext.tsx
+│   └── AuthContext.tsx OK
 │
 ├── shared
 │   ├── components
 │   │   ├── ui
-│   │   │   ├── Card.tsx
+│   │   │   ├── Card.tsx OK
 │   │   │   ├── Button.tsx
 │   │   │   ├── Input.tsx
 │   │   │   ├── Select.tsx
@@ -30,12 +30,12 @@ src
 │   │   │   └── Loading.tsx
 │   │   │
 │   │   ├── navigation
-│   │   │   ├── Sidebar.tsx
-│   │   │   └── Topbar.tsx
+│   │   │   ├── Sidebar.tsx OK
+│   │   │   └── Topbar.tsx OK
 │   │   │
 │   │   └── charts
-│   │       ├── LineChartCard.tsx
-│   │       └── PieChartCard.tsx
+│   │       ├── LineChartCard.tsx OK
+│   │       └── PieChartCard.tsx  OK
 │   │
 │   ├── hooks
 │   │   ├── useDisclosure.ts
@@ -61,10 +61,10 @@ src
 ├── features
 │   ├── auth
 │   │   ├── pages
-│   │   │   ├── Login.tsx
-│   │   │   └── Register.tsx
+│   │   │   ├── Login.tsx OK
+│   │   │   └── Register.tsx OK
 │   │   ├── hooks
-│   │   │   └── useAuthForm.ts
+│   │   │   └── useAuthForm.ts 
 │   │   ├── services
 │   │   │   └── authService.ts
 │   │   ├── types
@@ -74,11 +74,11 @@ src
 │   │
 │   ├── dashboard
 │   │   ├── pages
-│   │   │   └── Dashboard.tsx
+│   │   │   └── Dashboard.tsx OK
 │   │   ├── components
-│   │   │   ├── AccountsDashboardCard.tsx
-│   │   │   ├── MonthPickerCard.tsx
-│   │   │   ├── TopExpensesCard.tsx
+│   │   │   ├── AccountsDashboardCard.tsx OK
+│   │   │   ├── MonthPickerCard.tsx OK
+│   │   │   ├── TopExpensesCard.tsx OK
 │   │   │   └── DashboardSummaryCards.tsx
 │   │   ├── hooks
 │   │   │   └── useDashboard.ts
@@ -91,14 +91,14 @@ src
 │   │
 │   ├── accounts
 │   │   ├── pages
-│   │   │   └── Accounts.tsx
+│   │   │   └── Accounts.tsx OK
 │   │   ├── components
-│   │   │   ├── AccountCard.tsx
-│   │   │   ├── AccountForm.tsx
-│   │   │   ├── AccountList.tsx
-│   │   │   └── AccountsCard.tsx
+│   │   │   
+│   │   │   ├── AccountForm.tsx OK
+│   │   │   ├── AccountList.tsx OK
+│   │   │   └── AccountsCard.tsx OK
 │   │   ├── hooks
-│   │   │   └── useAccounts.ts
+│   │   │   └── useAccounts.ts OK
 │   │   ├── services
 │   │   │   └── accountsService.ts
 │   │   └── types

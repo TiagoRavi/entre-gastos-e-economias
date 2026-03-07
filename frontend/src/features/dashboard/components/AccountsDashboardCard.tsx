@@ -1,4 +1,4 @@
-import { useAccounts } from "../../../shared/hooks/useAccounts"
+import { useAccounts } from "../../accounts/hooks/useAccounts"
 
 export default function AccountsDashboardCard() {
 
