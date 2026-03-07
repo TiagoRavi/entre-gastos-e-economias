@@ -195,3 +195,6 @@ Base de SaaS real
 Não é mais tutorial project.
 
 Se quiser, posso também te mostrar 3 melhorias de arquitetura que deixam esse projeto nível senior backend, sem aumentar muito o código.
+
+
+Entar no banco docker compose exec postgres psql -U finance_user -d finance_db

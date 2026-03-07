@@ -325,7 +325,12 @@ export default function Transactions() {
 
             {transactions.map((t) => {
 
-              const dateFormatted = new Date(t.date).toLocaleDateString("pt-BR")
+              const formatDate = (date: string) => {
+                const [year, month, day] = date.split("-")
+                return `${day}/${month}/${year}`
+              }
+
+              const dateFormatted = formatDate(t.date)
 
               const displayAmount =
                 t.type === "expense"

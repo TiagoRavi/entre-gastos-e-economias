@@ -9,7 +9,8 @@ from app.services.indicator_service import (
     get_expense_indicator,
     get_savings_indicator,
     get_projection_indicator,
-    get_monthly_cashflow_indicator
+    get_monthly_cashflow_indicator,
+    get_top_expenses_indicator
 )
 
 router = APIRouter(
@@ -88,6 +89,20 @@ def monthly_cashflow(
     return get_monthly_cashflow_indicator(
         db,
         user.id,
+        period=period,
+        month=month
+    )
+
+@router.get("/top-expenses")
+def top_expenses(
+    period: Optional[str] = Query(None),
+    month: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return get_top_expenses_indicator(
+        db,
+        current_user.id,
         period=period,
         month=month
     )

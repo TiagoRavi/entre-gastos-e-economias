@@ -5,6 +5,9 @@ import LineChartCard from "../components/LineChartCard"
 import PieChartCard from "../components/PieChartCard"
 import MonthPickerCard from "../components/MonthPickerCard"
 import AccountsDashboardCard from "../components/AccountsDashboardCard"
+import TopExpensesCard from "../components/TopExpensesCard"
+
+
 
 interface Balance {
   income: number
@@ -41,6 +44,7 @@ export default function Dashboard() {
   const [pieData, setPieData] = useState<PieData[]>([])
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState<any[]>([])
+  
 
   const currencyFormatter = useMemo(() => {
     return new Intl.NumberFormat("pt-BR", {
@@ -176,6 +180,7 @@ export default function Dashboard() {
         <LineChartCard data={lineData} />
 
         <PieChartCard data={pieData} />
+        <TopExpensesCard month={period.month || ""} />
 
       </div>
 

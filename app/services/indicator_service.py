@@ -9,6 +9,7 @@ from app.domain.indicators.expense_indicator import calculate_expenses_by_catego
 from app.domain.indicators.savings_indicator import calculate_savings_rate
 from app.domain.indicators.projection_indicator import calculate_projection
 from app.domain.indicators.monthly_cashflow_indicator import calculate_monthly_cashflow
+from app.domain.indicators.top_expenses_indicator import calculate_top_expenses
 
 
 def _load_transactions(
@@ -166,3 +167,14 @@ def get_monthly_cashflow_indicator(
     transactions = _load_transactions(db, user_id, period, month)
 
     return calculate_monthly_cashflow(transactions, month)
+
+def get_top_expenses_indicator(
+    db: Session,
+    user_id: int,
+    period: str = "30d",
+    month: str | None = None
+):
+
+    transactions = _load_transactions(db, user_id, period, month)
+
+    return calculate_top_expenses(transactions)

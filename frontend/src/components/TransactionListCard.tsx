@@ -15,7 +15,7 @@ export default function TransactionListCard() {
   }
 
   const lastTransactions = [...transactions]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 5)
 
   return (
