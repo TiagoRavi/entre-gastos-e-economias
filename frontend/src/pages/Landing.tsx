@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import Topbar from "../components/Topbar"
+import Topbar from "../shared/components/navigation/Topbar"
 
 export default function Landing() {
   return (
