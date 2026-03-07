@@ -1,43 +1,30 @@
-import { useEffect, useState } from "react"
-import { api } from "../../../api/client"
+import { useCallback, useEffect, useState } from "react"
+import { dashboardService } from "../services/dashboardService"
+import type { Period } from "../types/dashboard.types"
 
-interface TopExpense {
-  category: string
-  amount: number
-}
-
-export const useTopExpenses = (month: string) => {
-  const [expenses, setExpenses] = useState<TopExpense[]>([])
+export function useTopExpenses(period: Period) {
+  const [expenses, setExpenses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchTopExpenses = async () => {
-      try {
-        setLoading(true)
-
-        const response = await api.get("/indicators/top-expenses", {
-          params: { month },
-        })
-
-        setExpenses(response.data || [])
-      } catch (error) {
-        console.error("Erro ao carregar maiores despesas", error)
-        setExpenses([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (month) {
-      fetchTopExpenses()
-    } else {
-      setExpenses([])
+  const loadExpenses = useCallback(async () => {
+    try {
+      setLoading(true)
+      const data = await dashboardService.getTopExpenses(period)
+      setExpenses(data)
+    } catch (error) {
+      console.error("Erro ao carregar maiores despesas", error)
+    } finally {
       setLoading(false)
     }
-  }, [month])
+  }, [period.month, period.start_month, period.end_month])
+
+  useEffect(() => {
+    loadExpenses()
+  }, [loadExpenses])
 
   return {
     expenses,
     loading,
+    reload: loadExpenses
   }
 }

@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react"
-
-interface Period {
-  month?: string
-  start_month?: string
-  end_month?: string
-}
+import type { Period } from "../types/dashboard.types"
 
 interface Props {
   value: Period
@@ -47,39 +42,40 @@ export default function MonthPickerCard({ value, onChange }: Props) {
     const m = String(index + 1).padStart(2, "0")
 
     if (mode === "month") {
-      onChange({ month: `${year}-${m}` })
+      onChange({
+        month: `${year}-${m}`
+      })
+
       setOpen(false)
       setStart(null)
       setEnd(null)
       return
     }
 
-    if (mode === "range") {
-      if (!start) {
-        setStart(m)
-        return
-      }
-
-      let startMonth = start
-      let endMonth = m
-
-      if (Number(endMonth) < Number(startMonth)) {
-        const temp = startMonth
-        startMonth = endMonth
-        endMonth = temp
-      }
-
-      setEnd(endMonth)
-
-      onChange({
-        start_month: `${year}-${startMonth}`,
-        end_month: `${year}-${endMonth}`
-      })
-
-      setStart(null)
-      setEnd(null)
-      setOpen(false)
+    if (!start) {
+      setStart(m)
+      return
     }
+
+    let startMonth = start
+    let endMonth = m
+
+    if (Number(endMonth) < Number(startMonth)) {
+      const temp = startMonth
+      startMonth = endMonth
+      endMonth = temp
+    }
+
+    setEnd(endMonth)
+
+    onChange({
+      start_month: `${year}-${startMonth}`,
+      end_month: `${year}-${endMonth}`
+    })
+
+    setStart(null)
+    setEnd(null)
+    setOpen(false)
   }
 
   const currentMonth = value?.month?.split("-")[1]

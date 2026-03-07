@@ -1,11 +1,12 @@
 import { useTopIncomes } from "../hooks/useTopIncomes"
+import type { Period } from "../types/dashboard.types"
 
 interface Props {
-  month: string
+  period: Period
 }
 
-export default function TopIncomesCard({ month }: Props) {
-  const { incomes, loading } = useTopIncomes(month)
+export default function TopIncomesCard({ period }: Props) {
+  const { incomes, loading } = useTopIncomes(period)
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
@@ -38,10 +39,7 @@ export default function TopIncomesCard({ month }: Props) {
         )}
 
         {incomes.map((income, index) => (
-          <div
-            key={income.id ?? index}
-            style={row}
-          >
+          <div key={income.id ?? index} style={row}>
             <div style={leftContent}>
               <span style={incomeDot} />
               <span style={incomeName}>

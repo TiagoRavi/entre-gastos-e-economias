@@ -8,10 +8,11 @@ import type {
   PieData,
 } from "../types/dashboard.types"
 
-export const useDashboard = () => {
+const getCurrentMonth = () => new Date().toISOString().slice(0, 7)
 
-  const [period, setPeriod] = useState<Period>({
-    month: new Date().toISOString().slice(0, 7)
+export const useDashboard = () => {
+  const [period, setPeriodState] = useState<Period>({
+    month: getCurrentMonth()
   })
 
   const [balance, setBalance] = useState<Balance | null>(null)
@@ -26,10 +27,12 @@ export const useDashboard = () => {
     })
   }, [])
 
+  const setPeriod = useCallback((nextPeriod: Period) => {
+    setPeriodState(nextPeriod)
+  }, [])
+
   const loadIndicators = useCallback(async () => {
-
     try {
-
       setLoading(true)
 
       const [
@@ -47,17 +50,11 @@ export const useDashboard = () => {
       setBalance(balanceData)
       setLineData(mapCashflow(monthlyData))
       setPieData(mapPieData(expensesData, categoriesData))
-
     } catch (error) {
-
       console.error("Erro ao carregar indicadores", error)
-
     } finally {
-
       setLoading(false)
-
     }
-
   }, [period])
 
   useEffect(() => {
@@ -74,5 +71,4 @@ export const useDashboard = () => {
     currencyFormatter,
     reload: loadIndicators
   }
-
 }

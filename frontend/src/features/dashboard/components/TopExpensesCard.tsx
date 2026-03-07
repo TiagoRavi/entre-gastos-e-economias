@@ -1,11 +1,12 @@
 import { useTopExpenses } from "../hooks/useTopExpenses"
+import type { Period } from "../types/dashboard.types"
 
 interface Props {
-  month: string
+  period: Period
 }
 
-export default function TopExpensesCard({ month }: Props) {
-  const { expenses, loading } = useTopExpenses(month)
+export default function TopExpensesCard({ period }: Props) {
+  const { expenses, loading } = useTopExpenses(period)
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
@@ -14,11 +15,7 @@ export default function TopExpensesCard({ month }: Props) {
     })
 
   if (loading) {
-    return (
-      <div className="card">
-        Carregando maiores despesas...
-      </div>
-    )
+    return <div className="card">Carregando maiores despesas...</div>
   }
 
   const total = expenses.reduce((acc, expense) => acc + Number(expense.amount), 0)
@@ -32,22 +29,19 @@ export default function TopExpensesCard({ month }: Props) {
 
       <div style={list}>
         {expenses.length === 0 && (
-          <div style={emptyState}>
-            Nenhuma despesa encontrada
-          </div>
+          <div style={emptyState}>Nenhuma despesa encontrada</div>
         )}
 
         {expenses.map((expense, index) => (
-          <div
-            key={index}
-            style={row}
-          >
+          <div key={expense.id ?? index} style={row}>
             <div style={leftContent}>
-              <span style={expenseName}>{expense.category}</span>
+              <span style={expenseName}>
+                {expense.category || expense.description || "Despesa"}
+              </span>
             </div>
 
             <strong style={amount}>
-              {formatCurrency(expense.amount)}
+              {formatCurrency(Number(expense.amount))}
             </strong>
           </div>
         ))}

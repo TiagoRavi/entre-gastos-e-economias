@@ -18,6 +18,8 @@ export default function Dashboard() {
     currencyFormatter,
   } = useDashboard()
 
+  console.log("period dashboard:", period)
+
   if (loading) {
     return <div style={{ padding: "40px" }}>Carregando dashboard...</div>
   }
@@ -55,8 +57,8 @@ export default function Dashboard() {
         <AccountsDashboardCard />
         <LineChartCard data={lineData} />
         <PieChartCard data={pieData} />
-        <TopExpensesCard month={period.month || ""} />
-        <TopIncomesCard month={period.month || ""} />
+        <TopExpensesCard period={period} />
+        <TopIncomesCard period={period} />
       </div>
     </div>
   )

@@ -88,8 +88,8 @@ export default function LineChartCard({ data }: Props) {
             />
 
             <Tooltip
-              formatter={(value: number) => formatCurrency(value)}
-              labelFormatter={(label) => formatMonth(label)}
+              formatter={(value) => formatCurrency(Number(value))}
+              labelFormatter={(label) => formatMonth(String(label))}
               contentStyle={tooltipStyle}
             />
 

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
-import { api } from "../../../api/client"
+import { useCallback, useEffect, useState } from "react"
+import { dashboardService } from "../services/dashboardService"
+import type { Period } from "../types/dashboard.types"
 
 interface IncomeItem {
   id?: number
@@ -8,32 +9,30 @@ interface IncomeItem {
   amount: number | string
 }
 
-export function useTopIncomes(month: string) {
+export function useTopIncomes(period: Period) {
   const [incomes, setIncomes] = useState<IncomeItem[]>([])
   const [loading, setLoading] = useState(true)
 
+  const loadIncomes = useCallback(async () => {
+    try {
+      setLoading(true)
+      const data = await dashboardService.getTopIncomes(period)
+      setIncomes(data ?? [])
+    } catch (error) {
+      console.error("Erro ao buscar maiores receitas:", error)
+      setIncomes([])
+    } finally {
+      setLoading(false)
+    }
+  }, [period.month, period.start_month, period.end_month])
+
   useEffect(() => {
-    async function fetchTopIncomes() {
-      try {
-        setLoading(true)
+    loadIncomes()
+  }, [loadIncomes])
 
-        const response = await api.get("/indicators/top-incomes", {
-          params: { month }
-        })
-
-        setIncomes(response.data ?? [])
-      } catch (error) {
-        console.error("Erro ao buscar maiores receitas:", error)
-        setIncomes([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (month) {
-      fetchTopIncomes()
-    }
-  }, [month])
-
-  return { incomes, loading }
+  return {
+    incomes,
+    loading,
+    reload: loadIncomes
+  }
 }
