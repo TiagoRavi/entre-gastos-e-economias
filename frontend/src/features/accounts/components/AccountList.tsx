@@ -8,6 +8,7 @@ interface Account {
 interface Props {
   accounts: Account[]
   deleteAccount: (id: number) => void
+  totalBalance: number
 }
 
 export default function AccountList({

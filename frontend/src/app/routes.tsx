@@ -1,12 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Landing from "../features/auth/pages/Landing"
+
+import Landing from "../pages/Landing"
 import Login from "../features/auth/pages/Login"
-import Register from "../pages/Register"
+import Register from "../features/auth/pages/Register"
+
 import Dashboard from "../features/dashboard/pages/Dashboard"
-import Accounts from "../pages/Accounts"
-import Categories from "../pages/Categories"
-import Transactions from "../pages/Transactions"
+
+import Accounts from "../features/accounts/pages/Accounts"
+import Categories from "../features/categories/pages/Categories"
+import Transactions from "../features/transactions/pages/Transactions"
+
 import Budgets from "../features/budgets/pages/Budgets"
+
 import ProtectedRoute from "../routes/ProtectedRoute"
 import DashboardLayout from "../layouts/DashboardLayout"
 
