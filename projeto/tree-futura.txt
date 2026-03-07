@@ -51,12 +51,12 @@ src
 │   │   └── common.ts
 │   │
 │   └── styles
-│       ├── base.css
-│       ├── buttons.css
-│       ├── forms.css
-│       ├── modal.css
-│       ├── table.css
-│       └── transitions.css
+│       ├── base.css OK
+│       ├── buttons.css OK
+│       ├── forms.css OK
+│       ├── modal.css OK
+│       ├── table.css OK
+│       └── transitions.css OK
 │
 ├── features
 │   ├── auth
@@ -70,7 +70,7 @@ src
 │   │   ├── types
 │   │   │   └── auth.types.ts
 │   │   └── styles
-│   │       └── auth.css
+│   │       └── auth.css OK
 │   │
 │   ├── dashboard
 │   │   ├── pages
@@ -140,13 +140,13 @@ src
 │   │
 │   └── budgets
 │       ├── pages
-│       │   └── Budgets.tsx
+│       │   └── Budgets.tsx OK
 │       ├── hooks
-│       │   └── useBudgets.ts
+│       │   └── useBudgets.ts OK
 │       ├── services
 │       │   └── budgetsService.ts
 │       └── types
 │           └── budgets.types.ts
 │
 └── pages
-    └── Landing.tsx
+    └── Landing.tsx OK
