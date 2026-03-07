@@ -6,7 +6,7 @@ import Register from "../features/auth/pages/Register"
 import Dashboard from "../features/dashboard/pages/Dashboard"
 import Accounts from "../features/accounts/pages/Accounts"
 import Categories from "../pages/Categories"
-import Transactions from "../pages/Transactions"
+import Transactions from "../features/transactions/pages/Transactions"
 import Budgets from "../pages/Budgets"
 
 import ProtectedRoute from "../routes/ProtectedRoute"
