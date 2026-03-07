@@ -82,6 +82,10 @@ export default function Topbar() {
 }
 
 const topbarStyle = {
+  position: "fixed" as const,
+  top: 0,
+  left: 0,
+  width: "100%",
   height: "64px",
   display: "flex",
   alignItems: "center",
@@ -89,7 +93,8 @@ const topbarStyle = {
   padding: "0 24px",
   background: "#0f172a",
   borderBottom: "1px solid #1f2937",
-  color: "white"
+  color: "white",
+  zIndex: 1000
 }
 
 const rightArea = {

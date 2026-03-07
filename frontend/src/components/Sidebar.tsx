@@ -63,13 +63,19 @@ export default function Sidebar() {
 }
 
 const sidebarStyle = {
+  position: "fixed" as const,
+  top: 0,
+  left: 0,
   width: "240px",
+  height: "100vh",
   background: "#0f172a",
   color: "white",
   padding: "24px 16px",
   display: "flex",
   flexDirection: "column" as const,
-  borderRight: "1px solid #1f2937"
+  borderRight: "1px solid #1f2937",
+  overflowY: "auto" as const,
+  zIndex: 999
 }
 
 const logoStyle = {
