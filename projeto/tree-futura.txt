@@ -1,0 +1,152 @@
+src
+├── app
+│   ├── App.tsx ok
+│   ├── main.tsx ok 
+│   └── routes.tsx ok 
+│
+├── api
+│   ├── client.ts ok 
+│   └── endpoints.ts ok 
+│
+├── layouts
+│   └── DashboardLayout.tsx
+│
+├── routes
+│   └── ProtectedRoute.tsx
+│
+├── context
+│   └── AuthContext.tsx
+│
+├── shared
+│   ├── components
+│   │   ├── ui
+│   │   │   ├── Card.tsx
+│   │   │   ├── Button.tsx
+│   │   │   ├── Input.tsx
+│   │   │   ├── Select.tsx
+│   │   │   ├── Modal.tsx
+│   │   │   ├── Badge.tsx
+│   │   │   ├── EmptyState.tsx
+│   │   │   └── Loading.tsx
+│   │   │
+│   │   ├── navigation
+│   │   │   ├── Sidebar.tsx
+│   │   │   └── Topbar.tsx
+│   │   │
+│   │   └── charts
+│   │       ├── LineChartCard.tsx
+│   │       └── PieChartCard.tsx
+│   │
+│   ├── hooks
+│   │   ├── useDisclosure.ts
+│   │   ├── useDebounce.ts
+│   │   └── usePagination.ts
+│   │
+│   ├── utils
+│   │   ├── currency.ts
+│   │   ├── date.ts
+│   │   └── string.ts
+│   │
+│   ├── types
+│   │   └── common.ts
+│   │
+│   └── styles
+│       ├── base.css
+│       ├── buttons.css
+│       ├── forms.css
+│       ├── modal.css
+│       ├── table.css
+│       └── transitions.css
+│
+├── features
+│   ├── auth
+│   │   ├── pages
+│   │   │   ├── Login.tsx
+│   │   │   └── Register.tsx
+│   │   ├── hooks
+│   │   │   └── useAuthForm.ts
+│   │   ├── services
+│   │   │   └── authService.ts
+│   │   ├── types
+│   │   │   └── auth.types.ts
+│   │   └── styles
+│   │       └── auth.css
+│   │
+│   ├── dashboard
+│   │   ├── pages
+│   │   │   └── Dashboard.tsx
+│   │   ├── components
+│   │   │   ├── AccountsDashboardCard.tsx
+│   │   │   ├── MonthPickerCard.tsx
+│   │   │   ├── TopExpensesCard.tsx
+│   │   │   └── DashboardSummaryCards.tsx
+│   │   ├── hooks
+│   │   │   └── useDashboard.ts
+│   │   ├── services
+│   │   │   └── dashboardService.ts
+│   │   ├── types
+│   │   │   └── dashboard.types.ts
+│   │   └── utils
+│   │       └── dashboardMappers.ts
+│   │
+│   ├── accounts
+│   │   ├── pages
+│   │   │   └── Accounts.tsx
+│   │   ├── components
+│   │   │   ├── AccountCard.tsx
+│   │   │   ├── AccountForm.tsx
+│   │   │   ├── AccountList.tsx
+│   │   │   └── AccountsCard.tsx
+│   │   ├── hooks
+│   │   │   └── useAccounts.ts
+│   │   ├── services
+│   │   │   └── accountsService.ts
+│   │   └── types
+│   │       └── accounts.types.ts
+│   │
+│   ├── transactions
+│   │   ├── pages
+│   │   │   └── Transactions.tsx
+│   │   ├── components
+│   │   │   ├── TransactionItem.tsx
+│   │   │   ├── TransactionListCard.tsx
+│   │   │   ├── TransactionModal.tsx
+│   │   │   ├── TransferModal.tsx
+│   │   │   ├── TransactionsHeader.tsx
+│   │   │   ├── TransactionsTable.tsx
+│   │   │   ├── TransactionsPagination.tsx
+│   │   │   └── TransactionActionsMenu.tsx
+│   │   ├── hooks
+│   │   │   ├── useTransactions.ts
+│   │   │   ├── useCreateTransaction.ts
+│   │   │   └── useTransfer.ts
+│   │   ├── services
+│   │   │   └── transactionsService.ts
+│   │   ├── types
+│   │   │   └── transactions.types.ts
+│   │   └── utils
+│   │       ├── formatTransaction.ts
+│   │       └── transactionValidators.ts
+│   │
+│   ├── categories
+│   │   ├── pages
+│   │   │   └── Categories.tsx
+│   │   ├── hooks
+│   │   │   └── useCategories.ts
+│   │   ├── services
+│   │   │   └── categoriesService.ts
+│   │   └── types
+│   │       └── categories.types.ts
+│   │
+│   └── budgets
+│       ├── pages
+│       │   └── Budgets.tsx
+│       ├── hooks
+│       │   └── useBudgets.ts
+│       ├── services
+│       │   └── budgetsService.ts
+│       └── types
+│           └── budgets.types.ts
+│
+└── pages
+    └── Landing.tsx
