@@ -1,44 +1,43 @@
 import {
-  PieChart,
-  Pie,
-  Cell,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
   Legend
 } from "recharts"
 
-interface CategoryExpense {
-  name: string
-  value: number
+interface ChartData {
+  month: string
+  income: number
+  expense: number
 }
 
 interface Props {
-  data: CategoryExpense[]
+  data: ChartData[]
 }
 
-const COLORS = [
-  "#6366f1",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#14b8a6",
-  "#8b5cf6",
-  "#06b6d4"
+const months = [
+  "JAN", "FEV", "MAR", "ABR",
+  "MAI", "JUN", "JUL", "AGO",
+  "SET", "OUT", "NOV", "DEZ"
 ]
 
-export default function PieChartCard({ data }: Props) {
-
+export default function LineChartCard({ data }: Props) {
   const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
       style: "currency",
-      currency: "BRL",
+      currency: "BRL"
     })
 
-  // ordena categorias por valor
-  const sortedData = [...data].sort((a, b) => b.value - a.value)
+  const formatMonth = (value: string) => {
+    const m = Number(value.split("-")[1]) - 1
+    return months[m] || value
+  }
 
-  // caso não existam dados
-  if (!sortedData || sortedData.length === 0) {
+  if (!data || data.length === 0) {
     return (
       <div
         style={{
@@ -52,7 +51,7 @@ export default function PieChartCard({ data }: Props) {
           justifyContent: "center"
         }}
       >
-        Nenhuma despesa registrada
+        Nenhum dado disponível
       </div>
     )
   }
@@ -66,42 +65,32 @@ export default function PieChartCard({ data }: Props) {
         boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
       }}
     >
-
       <h3 style={{ marginBottom: "20px" }}>
-        Despesas por categoria
+        Receita vs Despesa
       </h3>
 
-      <div style={{ width: "100%", height: 280 }}>
-
+      <div style={{ width: "100%", height: 280, minWidth: 0 }}>
         <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={data}
+            margin={{ top: 10, right: 20, left: 10, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" />
 
-          <PieChart>
+            <XAxis
+              dataKey="month"
+              tickFormatter={formatMonth}
+              tick={{ fontSize: 12 }}
+            />
 
-            <Pie
-              data={sortedData}
-              dataKey="value"
-              nameKey="name"
-              outerRadius={95}
-              innerRadius={60}
-              paddingAngle={3}
-              label={({ percent }) =>
-                percent > 0.05
-                  ? `${(percent * 100).toFixed(0)}%`
-                  : ""
-              }
-            >
-
-              {sortedData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-
-            </Pie>
+            <YAxis
+              tickFormatter={(value) => formatCurrency(value)}
+              tick={{ fontSize: 12 }}
+            />
 
             <Tooltip
               formatter={(value: number) => formatCurrency(value)}
+              labelFormatter={(label) => formatMonth(label)}
               contentStyle={{
                 borderRadius: "8px",
                 border: "none",
@@ -109,22 +98,30 @@ export default function PieChartCard({ data }: Props) {
               }}
             />
 
-            <Legend
-              verticalAlign="bottom"
-              iconType="circle"
-              formatter={(value: string) => (
-                <span style={{ color: "#374151", fontSize: 13 }}>
-                  {value}
-                </span>
-              )}
+            <Legend />
+
+            <Line
+              type="monotone"
+              dataKey="income"
+              name="Receitas"
+              stroke="#16a34a"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
             />
 
-          </PieChart>
-
+            <Line
+              type="monotone"
+              dataKey="expense"
+              name="Despesas"
+              stroke="#dc2626"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
+          </LineChart>
         </ResponsiveContainer>
-
       </div>
-
     </div>
   )
 }
