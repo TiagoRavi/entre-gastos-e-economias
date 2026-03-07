@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import Landing from "../pages/Landing"
-import Login from "../pages/Login"
-import Register from "../pages/Register"
+import Login from "../features/auth/pages/Login"
+import Register from "../features/auth/pages/Register"
 import Dashboard from "../pages/Dashboard"
 import Accounts from "../pages/Accounts"
 import Categories from "../pages/Categories"

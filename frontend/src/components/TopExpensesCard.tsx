@@ -1,4 +1,4 @@
-import { useTopExpenses } from "../hooks/useTopExpenses"
+import { useTopExpenses } from "../shared/hooks/useTopExpenses"
 
 interface Props {
   month: string
