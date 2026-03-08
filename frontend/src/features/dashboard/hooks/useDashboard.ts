@@ -22,6 +22,7 @@ export const useDashboard = () => {
   const [accumulatedBalance, setAccumulatedBalance] = useState<SummaryData | null>(null)
   const [lineData, setLineData] = useState<Cashflow[]>([])
   const [pieData, setPieData] = useState<PieData[]>([])
+  const [incomePieData, setIncomePieData] = useState<PieData[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 
@@ -50,16 +51,19 @@ export const useDashboard = () => {
         balanceData,
         cashflowData,
         expensesData,
+        incomesData,
       ] = await Promise.all([
         dashboardService.getBalance(period),
         dashboardService.getMonthlyCashflow(period),
         dashboardService.getExpensesByCategory(period),
+        dashboardService.getIncomeByCategory(period),
       ])
 
       setBalance(balanceData?.[scope] ?? null)
       setAccumulatedBalance(balanceData?.accumulated ?? null)
       setLineData(mapCashflow(cashflowData, scope))
       setPieData(mapCategoryPieData(expensesData, scope))
+      setIncomePieData(mapCategoryPieData(incomesData, scope))
     } catch (error) {
       console.error("Erro ao carregar indicadores", error)
     } finally {
@@ -85,6 +89,7 @@ export const useDashboard = () => {
     accumulatedBalance,
     lineData,
     pieData,
+    incomePieData,
     loading,
     refreshing,
     currencyFormatter,

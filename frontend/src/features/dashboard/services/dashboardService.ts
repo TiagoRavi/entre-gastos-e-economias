@@ -38,6 +38,13 @@ export const dashboardService = {
     return response.data
   },
 
+  async getIncomeByCategory(period: Period) {
+    const response = await api.get("/indicators/income-by-category", {
+      params: buildPeriodParams(period)
+    })
+    return response.data
+  },
+
   async getTopExpenses(period: Period) {
     const response = await api.get("/indicators/top-expenses", {
       params: buildPeriodParams(period)

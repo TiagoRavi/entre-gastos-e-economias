@@ -6,6 +6,7 @@ import MonthPickerCard from "../components/MonthPickerCard"
 import TopExpensesCard from "../components/TopExpensesCard"
 import TopIncomesCard from "../components/TopIncomesCard"
 import { useDashboard } from "../hooks/useDashboard"
+import IncomeByCategoryChartCard from "../components/IncomeCategoryChartCard"
 
 export default function Dashboard() {
   const {
@@ -17,6 +18,7 @@ export default function Dashboard() {
     accumulatedBalance,
     lineData,
     pieData,
+    incomePieData,
     loading,
     currencyFormatter,
   } = useDashboard()
@@ -69,6 +71,7 @@ export default function Dashboard() {
         <PieChartCard data={pieData} />
         <TopExpensesCard period={period} scope={scope} />
         <TopIncomesCard period={period} scope={scope} />
+        <IncomeByCategoryChartCard data={incomePieData} />
       </div>
     </div>
   )
