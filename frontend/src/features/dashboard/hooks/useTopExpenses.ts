@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { dashboardService } from "../services/dashboardService"
 import type { Period, TopItem } from "../types/dashboard.types"
+import { isValidTopItem, type DashboardTopItem } from "../utils/topItemsFilter"
 
 type Scope = "monthly" | "accumulated"
 
@@ -16,12 +17,10 @@ export function useTopExpenses(
       setLoading(true)
 
       const data = await dashboardService.getTopExpenses(period)
+      const rawItems: DashboardTopItem[] = Array.isArray(data?.[scope]) ? data[scope] : []
+      const filteredItems = rawItems.filter(isValidTopItem)
 
-      const items = Array.isArray(data?.[scope])
-        ? data[scope]
-        : []
-
-      setExpenses(items)
+      setExpenses(filteredItems)
     } catch (error) {
       console.error("Erro ao carregar maiores despesas", error)
       setExpenses([])

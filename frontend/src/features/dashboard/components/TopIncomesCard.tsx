@@ -30,11 +30,7 @@ export default function TopIncomesCard({
     })
 
   if (loading) {
-    return (
-      <div className="card">
-        Carregando maiores receitas...
-      </div>
-    )
+    return <div className="card">Carregando maiores receitas...</div>
   }
 
   const total = safeIncomes.reduce(
@@ -56,16 +52,13 @@ export default function TopIncomesCard({
 
       <div style={list}>
         {safeIncomes.length === 0 && (
-          <div style={emptyState}>
-            Nenhuma receita encontrada
-          </div>
+          <div style={emptyState}>Nenhuma receita encontrada</div>
         )}
 
         {safeIncomes.map((income, index) => (
           <div key={income.id ?? index} style={row}>
             <div style={leftContent}>
               <span style={incomeDot} />
-
               <span style={incomeName}>
                 {income.category_name ||
                   income.category ||
