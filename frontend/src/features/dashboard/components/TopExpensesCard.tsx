@@ -1,12 +1,27 @@
 import { useTopExpenses } from "../hooks/useTopExpenses"
 import type { Period } from "../types/dashboard.types"
 
-interface Props {
-  period: Period
+interface ExpenseItem {
+  id?: number
+  amount?: number
+  total?: number
+  category?: string
+  category_name?: string
+  description?: string
 }
 
-export default function TopExpensesCard({ period }: Props) {
-  const { expenses, loading } = useTopExpenses(period)
+interface Props {
+  period: Period
+  scope?: "monthly" | "accumulated"
+}
+
+export default function TopExpensesCard({
+  period,
+  scope = "monthly"
+}: Props) {
+  const { expenses, loading } = useTopExpenses(period, scope)
+
+  const safeExpenses: ExpenseItem[] = Array.isArray(expenses) ? expenses : []
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
@@ -18,36 +33,41 @@ export default function TopExpensesCard({ period }: Props) {
     return <div className="card">Carregando maiores despesas...</div>
   }
 
-  const total = expenses.reduce((acc, expense) => acc + Number(expense.amount), 0)
+  const total = safeExpenses.reduce(
+    (acc, expense) => acc + Number(expense.amount ?? expense.total ?? 0),
+    0
+  )
 
   return (
     <div className="card">
       <div style={header}>
-        <h3 style={title}>Maiores despesas</h3>
-        <span style={badge}>{expenses.length}</span>
+        <h3 style={title}>
+          {scope === "accumulated" ? "Maiores despesas acumuladas" : "Maiores despesas"}
+        </h3>
+        <span style={badge}>{safeExpenses.length}</span>
       </div>
 
       <div style={list}>
-        {expenses.length === 0 && (
+        {safeExpenses.length === 0 && (
           <div style={emptyState}>Nenhuma despesa encontrada</div>
         )}
 
-        {expenses.map((expense, index) => (
+        {safeExpenses.map((expense, index) => (
           <div key={expense.id ?? index} style={row}>
             <div style={leftContent}>
               <span style={expenseName}>
-                {expense.category || expense.description || "Despesa"}
+                {expense.category_name || expense.category || expense.description || "Despesa"}
               </span>
             </div>
 
             <strong style={amount}>
-              {formatCurrency(Number(expense.amount))}
+              {formatCurrency(Number(expense.amount ?? expense.total ?? 0))}
             </strong>
           </div>
         ))}
       </div>
 
-      {expenses.length > 0 && (
+      {safeExpenses.length > 0 && (
         <div style={footer}>
           <span style={footerLabel}>Total listado</span>
           <span style={footerValue}>{formatCurrency(total)}</span>

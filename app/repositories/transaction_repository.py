@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from datetime import date
 from typing import Optional
+from sqlalchemy import func, extract
+from app.models.category import Category
 
 from app.models.transaction import Transaction
 from app.schemas.enums import TransactionType
@@ -111,5 +113,28 @@ def get_all_transactions_by_user(
         db.query(Transaction)
         .filter(Transaction.user_id == user_id)
         .order_by(Transaction.date.desc())
+        .all()
+    )
+
+def get_incomes_grouped_by_category(
+    db: Session,
+    user_id: int,
+    year: int,
+    month: int
+):
+    return (
+        db.query(
+            Category.id.label("category_id"),
+            Category.name.label("category_name"),
+            func.coalesce(func.sum(Transaction.amount), 0).label("total"),
+        )
+        .join(Category, Category.id == Transaction.category_id)
+        .filter(Transaction.user_id == user_id)
+        .filter(Transaction.type == TransactionType.income.value)
+        .filter(extract("year", Transaction.date) == year)
+        .filter(extract("month", Transaction.date) == month)
+        .filter(Transaction.status == "confirmed")
+        .group_by(Category.id, Category.name)
+        .order_by(func.sum(Transaction.amount).desc())
         .all()
     )

@@ -1,12 +1,27 @@
 import { useTopIncomes } from "../hooks/useTopIncomes"
 import type { Period } from "../types/dashboard.types"
 
-interface Props {
-  period: Period
+interface IncomeItem {
+  id?: number
+  amount?: number
+  total?: number
+  category?: string
+  category_name?: string
+  description?: string
 }
 
-export default function TopIncomesCard({ period }: Props) {
-  const { incomes, loading } = useTopIncomes(period)
+interface Props {
+  period: Period
+  scope?: "monthly" | "accumulated"
+}
+
+export default function TopIncomesCard({
+  period,
+  scope = "monthly"
+}: Props) {
+  const { incomes, loading } = useTopIncomes(period, scope)
+
+  const safeIncomes: IncomeItem[] = Array.isArray(incomes) ? incomes : []
 
   const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
@@ -22,39 +37,51 @@ export default function TopIncomesCard({ period }: Props) {
     )
   }
 
-  const total = incomes.reduce((acc, income) => acc + Number(income.amount), 0)
+  const total = safeIncomes.reduce(
+    (acc, income) => acc + Number(income.amount ?? income.total ?? 0),
+    0
+  )
 
   return (
     <div className="card">
       <div style={header}>
-        <h3 style={title}>Maiores receitas</h3>
-        <span style={badge}>{incomes.length}</span>
+        <h3 style={title}>
+          {scope === "accumulated"
+            ? "Maiores receitas acumuladas"
+            : "Maiores receitas"}
+        </h3>
+
+        <span style={badge}>{safeIncomes.length}</span>
       </div>
 
       <div style={list}>
-        {incomes.length === 0 && (
+        {safeIncomes.length === 0 && (
           <div style={emptyState}>
             Nenhuma receita encontrada
           </div>
         )}
 
-        {incomes.map((income, index) => (
+        {safeIncomes.map((income, index) => (
           <div key={income.id ?? index} style={row}>
             <div style={leftContent}>
               <span style={incomeDot} />
+
               <span style={incomeName}>
-                {income.category || income.description || "Receita"}
+                {income.category_name ||
+                  income.category ||
+                  income.description ||
+                  "Receita"}
               </span>
             </div>
 
             <strong style={amount}>
-              {formatCurrency(Number(income.amount))}
+              {formatCurrency(Number(income.amount ?? income.total ?? 0))}
             </strong>
           </div>
         ))}
       </div>
 
-      {incomes.length > 0 && (
+      {safeIncomes.length > 0 && (
         <div style={footer}>
           <span style={footerLabel}>Total listado</span>
           <span style={footerValue}>{formatCurrency(total)}</span>

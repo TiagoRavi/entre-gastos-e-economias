@@ -1,19 +1,63 @@
-# app/indicators/expense_indicator.py
+from collections import defaultdict
+
+
+def _normalize_transaction_type(value) -> str:
+    if value is None:
+        return ""
+
+    if hasattr(value, "value"):
+        value = value.value
+
+    return str(value).strip().lower()
+
+
+def _normalize_status(value) -> str:
+    if value is None:
+        return ""
+
+    if hasattr(value, "value"):
+        value = value.value
+
+    return str(value).strip().lower()
+
 
 def calculate_expenses_by_category(transactions):
-
-    expenses = {}
+    grouped = defaultdict(float)
 
     for transaction in transactions:
-
-        if transaction.type != "expense":
+        if _normalize_transaction_type(transaction.type) != "expense":
             continue
 
-        category_id = transaction.category_id
+        if _normalize_status(getattr(transaction, "status", None)) != "confirmed":
+            continue
 
-        if category_id not in expenses:
-            expenses[category_id] = 0
+        if "transfer" in (transaction.description or "").lower():
+            continue
 
-        expenses[category_id] += transaction.amount
+        category_name = (
+            transaction.category.name
+            if getattr(transaction, "category", None)
+            else "Sem categoria"
+        )
 
-    return expenses
+        grouped[category_name] += abs(float(transaction.amount))
+
+    total = sum(grouped.values())
+
+    items = [
+        {
+            "category_name": category_name,
+            "total": round(amount, 2),
+            "percentage": round((amount / total) * 100, 2) if total > 0 else 0,
+        }
+        for category_name, amount in sorted(
+            grouped.items(),
+            key=lambda item: item[1],
+            reverse=True
+        )
+    ]
+
+    return {
+        "items": items,
+        "total": round(total, 2),
+    }

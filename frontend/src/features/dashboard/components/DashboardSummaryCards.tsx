@@ -1,8 +1,8 @@
 import Card from "../../../shared/components/ui/Card"
-import type { Balance } from "../types/dashboard.types"
+import type { SummaryData } from "../types/dashboard.types"
 
 interface DashboardSummaryCardsProps {
-  balance: Balance | null
+  balance: SummaryData | null
   currencyFormatter: Intl.NumberFormat
 }
 
@@ -11,8 +11,8 @@ export default function DashboardSummaryCards({
   currencyFormatter,
 }: DashboardSummaryCardsProps) {
   const income = balance?.income ?? 0
-  const expenses = balance?.expenses ?? 0
-  const result = balance?.balance ?? 0
+  const expense = balance?.expense ?? 0
+  const result = balance?.result ?? 0
 
   return (
     <div style={gridStyle}>
@@ -26,7 +26,7 @@ export default function DashboardSummaryCards({
 
       <Card
         title="Despesas"
-        value={currencyFormatter.format(expenses)}
+        value={currencyFormatter.format(expense)}
         subtitle="Saídas no período"
         accent="red"
         icon="📉"

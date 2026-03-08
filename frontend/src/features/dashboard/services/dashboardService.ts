@@ -2,14 +2,18 @@ import { api } from "../../../api/client"
 import type { Period } from "../types/dashboard.types"
 
 const buildPeriodParams = (period: Period) => {
+  if (period.start_month && period.end_month) {
+    return {
+      start_month: period.start_month,
+      end_month: period.end_month
+    }
+  }
+
   if (period.month) {
     return { month: period.month }
   }
 
-  return {
-    start_month: period.start_month,
-    end_month: period.end_month
-  }
+  return {}
 }
 
 export const dashboardService = {

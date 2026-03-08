@@ -1,27 +1,72 @@
-export interface Balance {
-  income: number
-  expenses: number
-  balance: number
-}
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { dashboardService } from "../services/dashboardService"
+import { mapCashflow, mapCategoryPieData } from "../utils/dashboardMappers"
+import type {
+  Cashflow,
+  Period,
+  PieData,
+  SummaryData,
+} from "../types/dashboard.types"
 
-export interface Cashflow {
-  month: string
-  income: number
-  expense: number
-}
+const getCurrentMonth = () => new Date().toISOString().slice(0, 7)
 
-export interface PieData {
-  name: string
-  value: number
-}
+export const useDashboard = () => {
+  const [period, setPeriodState] = useState<Period>({
+    month: getCurrentMonth()
+  })
 
-export interface Period {
-  month?: string
-  start_month?: string
-  end_month?: string
-}
+  const [balance, setBalance] = useState<SummaryData | null>(null)
+  const [lineData, setLineData] = useState<Cashflow[]>([])
+  const [pieData, setPieData] = useState<PieData[]>([])
+  const [loading, setLoading] = useState(true)
 
-export interface Category {
-  id: number
-  name: string
+  const currencyFormatter = useMemo(() => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL"
+    })
+  }, [])
+
+  const setPeriod = useCallback((nextPeriod: Period) => {
+    setPeriodState(nextPeriod)
+  }, [])
+
+  const loadIndicators = useCallback(async () => {
+    try {
+      setLoading(true)
+
+      const [
+        balanceData,
+        monthlyData,
+        expensesData
+      ] = await Promise.all([
+        dashboardService.getBalance(period),
+        dashboardService.getMonthlyCashflow(period),
+        dashboardService.getExpensesByCategory(period),
+      ])
+
+      setBalance(balanceData?.monthly ?? null)
+      setLineData(mapCashflow(monthlyData, "monthly"))
+      setPieData(mapCategoryPieData(expensesData, "monthly"))
+    } catch (error) {
+      console.error("Erro ao carregar indicadores", error)
+    } finally {
+      setLoading(false)
+    }
+  }, [period])
+
+  useEffect(() => {
+    loadIndicators()
+  }, [loadIndicators])
+
+  return {
+    period,
+    setPeriod,
+    balance,
+    lineData,
+    pieData,
+    loading,
+    currencyFormatter,
+    reload: loadIndicators
+  }
 }

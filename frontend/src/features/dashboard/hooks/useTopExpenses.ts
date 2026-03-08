@@ -1,22 +1,34 @@
 import { useCallback, useEffect, useState } from "react"
 import { dashboardService } from "../services/dashboardService"
-import type { Period } from "../types/dashboard.types"
+import type { Period, TopItem } from "../types/dashboard.types"
 
-export function useTopExpenses(period: Period) {
-  const [expenses, setExpenses] = useState<any[]>([])
+type Scope = "monthly" | "accumulated"
+
+export function useTopExpenses(
+  period: Period,
+  scope: Scope = "monthly"
+) {
+  const [expenses, setExpenses] = useState<TopItem[]>([])
   const [loading, setLoading] = useState(true)
 
   const loadExpenses = useCallback(async () => {
     try {
       setLoading(true)
+
       const data = await dashboardService.getTopExpenses(period)
-      setExpenses(data)
+
+      const items = Array.isArray(data?.[scope])
+        ? data[scope]
+        : []
+
+      setExpenses(items)
     } catch (error) {
       console.error("Erro ao carregar maiores despesas", error)
+      setExpenses([])
     } finally {
       setLoading(false)
     }
-  }, [period.month, period.start_month, period.end_month])
+  }, [period.month, period.start_month, period.end_month, scope])
 
   useEffect(() => {
     loadExpenses()

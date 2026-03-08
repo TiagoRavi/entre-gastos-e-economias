@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import type { Period } from "../types/dashboard.types"
 
 interface Props {
   value: Period
+  scope: "monthly" | "accumulated"
+  onScopeChange: (scope: "monthly" | "accumulated") => void
   onChange: (period: Period) => void
 }
 
@@ -12,7 +14,12 @@ const months = [
   "SET", "OUT", "NOV", "DEZ"
 ]
 
-export default function MonthPickerCard({ value, onChange }: Props) {
+export default function MonthPickerCard({
+  value,
+  scope,
+  onScopeChange,
+  onChange
+}: Props) {
   const now = new Date()
 
   const initialYear =
@@ -24,19 +31,10 @@ export default function MonthPickerCard({ value, onChange }: Props) {
 
   const [year, setYear] = useState(initialYear)
   const [open, setOpen] = useState(false)
-  const [mode, setMode] = useState<"month" | "range">("month")
   const [start, setStart] = useState<string | null>(null)
   const [end, setEnd] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (value?.month) {
-      setMode("month")
-    }
-
-    if (value?.start_month && value?.end_month) {
-      setMode("range")
-    }
-  }, [value])
+  const mode = scope === "monthly" ? "month" : "range"
 
   const selectMonth = (index: number) => {
     const m = String(index + 1).padStart(2, "0")
@@ -104,8 +102,9 @@ export default function MonthPickerCard({ value, onChange }: Props) {
         <div style={dropdown}>
           <div style={tabsWrapper}>
             <button
+              type="button"
               onClick={() => {
-                setMode("month")
+                onScopeChange("monthly")
                 setStart(null)
                 setEnd(null)
               }}
@@ -115,8 +114,9 @@ export default function MonthPickerCard({ value, onChange }: Props) {
             </button>
 
             <button
+              type="button"
               onClick={() => {
-                setMode("range")
+                onScopeChange("accumulated")
                 setStart(null)
                 setEnd(null)
               }}
@@ -127,13 +127,11 @@ export default function MonthPickerCard({ value, onChange }: Props) {
           </div>
 
           <div style={yearHeader}>
-            <button onClick={() => setYear(year - 1)} style={navBtn}>
+            <button type="button" onClick={() => setYear(year - 1)} style={navBtn}>
               ←
             </button>
 
-            <strong style={yearLabel}>{year}</strong>
-
-            <button onClick={() => setYear(year + 1)} style={navBtn}>
+            <button type="button" onClick={() => setYear(year + 1)} style={navBtn}>
               →
             </button>
           </div>
@@ -172,6 +170,7 @@ export default function MonthPickerCard({ value, onChange }: Props) {
 
               return (
                 <button
+                  type="button"
                   key={m}
                   onClick={() => selectMonth(i)}
                   style={{

@@ -1,51 +1,65 @@
 from collections import defaultdict
-from datetime import datetime
+
+
+def _normalize_transaction_type(value) -> str:
+    if value is None:
+        return ""
+
+    if hasattr(value, "value"):
+        value = value.value
+
+    return str(value).strip().lower()
+
+
+def _normalize_status(value) -> str:
+    if value is None:
+        return ""
+
+    if hasattr(value, "value"):
+        value = value.value
+
+    return str(value).strip().lower()
 
 
 def calculate_monthly_cashflow(transactions, month=None):
-
-    monthly = defaultdict(lambda: {"income": 0, "expense": 0})
-
-    # filtro por mês selecionado
-    if month:
-
-        year, m = month.split("-")
-        year = int(year)
-        m = int(m)
-
-        transactions = [
-            t for t in transactions
-            if t.date.year == year and t.date.month == m
-        ]
+    monthly = defaultdict(lambda: {"income": 0.0, "expense": 0.0})
 
     for t in transactions:
+        if _normalize_status(getattr(t, "status", None)) != "confirmed":
+            continue
 
-        m = t.date.strftime("%b")
+        if "transfer" in (t.description or "").lower():
+            continue
 
-        if t.type == "income":
-            monthly[m]["income"] += float(t.amount)
+        key = f"{t.date.year}-{t.date.month:02d}"
+        tx_type = _normalize_transaction_type(t.type)
+        amount = float(t.amount)
 
-        elif t.type == "expense":
-            monthly[m]["expense"] += float(t.amount)
+        if tx_type == "income":
+            monthly[key]["income"] += amount
 
-    result = []
+        elif tx_type == "expense":
+            monthly[key]["expense"] += abs(amount)
 
-    for m, values in monthly.items():
-        result.append({
-            "month": m,
-            "income": values["income"],
-            "expense": values["expense"]
-        })
+    items = [
+        {
+            "month": key,
+            "income": round(values["income"], 2),
+            "expense": round(values["expense"], 2),
+        }
+        for key, values in sorted(monthly.items())
+    ]
 
-    # se não houver transações retorna mês zerado
-    if not result and month:
+    # filtro opcional por mês específico
+    if month:
+        items = [item for item in items if item["month"] == month]
 
-        m = datetime.strptime(month, "%Y-%m").strftime("%b")
-
-        result.append({
-            "month": m,
+    # garante mês zerado se não houver transação
+    if month and not items:
+        items = [{
+            "month": month,
             "income": 0,
             "expense": 0
-        })
+        }]
 
-    return result
+    return items

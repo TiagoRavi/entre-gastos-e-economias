@@ -1,33 +1,51 @@
-from sqlalchemy import func
-from sqlalchemy.orm import Session
+def _normalize_transaction_type(value) -> str:
+    if value is None:
+        return ""
 
-from app.models.transaction import Transaction
-from app.models.category import Category
+    if hasattr(value, "value"):
+        value = value.value
+
+    return str(value).strip().lower()
+
+
+def _normalize_status(value) -> str:
+    if value is None:
+        return ""
+
+    if hasattr(value, "value"):
+        value = value.value
+
+    return str(value).strip().lower()
 
 
 def calculate_top_incomes(transactions, limit: int = 5):
-    incomes = [
-        t for t in transactions
-        if t.type == "income"
-        and float(t.amount) > 0
-        and t.category is not None
-    ]
-
     grouped = {}
 
-    for transaction in incomes:
-        category_name = transaction.category.name
+    for t in transactions:
+        if _normalize_transaction_type(t.type) != "income":
+            continue
 
-        grouped[category_name] = grouped.get(category_name, 0) + float(transaction.amount)
+        if _normalize_status(getattr(t, "status", None)) != "confirmed":
+            continue
+
+        if float(t.amount) <= 0:
+            continue
+
+        category_name = t.category.name if getattr(t, "category", None) else "Sem categoria"
+
+        grouped[category_name] = grouped.get(category_name, 0) + float(t.amount)
+
+    total = sum(grouped.values())
 
     result = [
         {
-            "category": category,
-            "amount": amount
+            "category_name": category_name,
+            "total": round(amount, 2),
+            "percentage": round((amount / total) * 100, 2) if total > 0 else 0,
         }
-        for category, amount in grouped.items()
+        for category_name, amount in grouped.items()
     ]
 
-    result.sort(key=lambda x: x["amount"], reverse=True)
+    result.sort(key=lambda x: x["total"], reverse=True)
 
     return result[:limit]

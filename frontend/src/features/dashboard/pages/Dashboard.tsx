@@ -11,14 +11,15 @@ export default function Dashboard() {
   const {
     period,
     setPeriod,
+    scope,
+    setScope,
     balance,
+    accumulatedBalance,
     lineData,
     pieData,
     loading,
     currencyFormatter,
   } = useDashboard()
-
-  console.log("period dashboard:", period)
 
   if (loading) {
     return <div style={{ padding: "40px" }}>Carregando dashboard...</div>
@@ -38,6 +39,8 @@ export default function Dashboard() {
 
         <MonthPickerCard
           value={period}
+          scope={scope}
+          onScopeChange={setScope}
           onChange={setPeriod}
         />
       </div>
@@ -46,6 +49,13 @@ export default function Dashboard() {
         balance={balance}
         currencyFormatter={currencyFormatter}
       />
+
+      {scope === "accumulated" && accumulatedBalance && (
+        <div style={{ marginBottom: "30px", opacity: 0.8 }}>
+          <strong>Saldo acumulado:</strong>{" "}
+          {currencyFormatter.format(accumulatedBalance.balance)}
+        </div>
+      )}
 
       <div
         style={{
@@ -57,8 +67,8 @@ export default function Dashboard() {
         <AccountsDashboardCard />
         <LineChartCard data={lineData} />
         <PieChartCard data={pieData} />
-        <TopExpensesCard period={period} />
-        <TopIncomesCard period={period} />
+        <TopExpensesCard period={period} scope={scope} />
+        <TopIncomesCard period={period} scope={scope} />
       </div>
     </div>
   )
