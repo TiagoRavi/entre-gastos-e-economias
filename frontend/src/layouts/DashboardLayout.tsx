@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom"
 import Sidebar from "../shared/components/navigation/Sidebar"
 import Topbar from "../shared/components/navigation/Topbar"
 import Footer from "../shared/components/navigation/Footer"
+import FinanceAssistantButton from "../shared/components/assistant/FinanceAssistantButton"
 
 export default function DashboardLayout() {
   return (
@@ -11,15 +12,16 @@ export default function DashboardLayout() {
 
       <main style={mainStyle}>
         <div style={contentWrapper}>
-
           <div style={contentStyle}>
             <Outlet />
           </div>
 
           <Footer />
-
         </div>
       </main>
+
+      {/* 👇 BOTÃO DO ASSISTENTE */}
+      <FinanceAssistantButton />
     </div>
   )
 }

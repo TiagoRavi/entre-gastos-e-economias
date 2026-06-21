@@ -8,10 +8,11 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Instalar dependências do sistema
+# Instalar dependências do sistema + pg_isready
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements

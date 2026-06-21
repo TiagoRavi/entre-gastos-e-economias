@@ -25,8 +25,9 @@ class Transaction(BaseModel):
         nullable=True
     )
 
+    # 🔒 Melhor: padronizar tipo (evita bug na query)
     type = Column(
-        String(50),
+        String(20),
         nullable=False
     )
 
@@ -45,14 +46,13 @@ class Transaction(BaseModel):
         nullable=False
     )
 
-    # NOVO CAMPO
     status = Column(
         String(20),
         nullable=False,
         default="pending"
     )
 
-    # Relationships
+    # 🔗 Relationships
 
     user = relationship(
         "User",
@@ -70,16 +70,30 @@ class Transaction(BaseModel):
     )
 
     # -----------------------------
-    # VALIDAÇÃO DE RECEITA/DESPESA
+    # 🔒 VALIDAÇÕES ROBUSTAS
     # -----------------------------
+
+    @validates("type")
+    def validate_type(self, key, value):
+        allowed_types = {"income", "expense"}
+
+        if value not in allowed_types:
+            raise ValueError(f"Tipo inválido: {value}")
+
+        return value
 
     @validates("amount")
     def validate_amount(self, key, value):
+        if value is None:
+            raise ValueError("Valor não pode ser nulo.")
 
-        if self.type == "income" and value < 0:
-            raise ValueError("Receita deve ser um valor positivo.")
+        # ⚠️ garante que type já existe
+        if hasattr(self, "type"):
 
-        if self.type == "expense" and value > 0:
-            raise ValueError("Despesa deve ser um valor negativo.")
+            if self.type == "income" and value < 0:
+                raise ValueError("Receita deve ser positiva.")
+
+            if self.type == "expense" and value > 0:
+                raise ValueError("Despesa deve ser negativa.")
 
         return value

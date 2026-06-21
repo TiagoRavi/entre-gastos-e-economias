@@ -53,11 +53,19 @@ export default function IncomeByCategoryChartCard({ data }: Props) {
   }
 
   const normalizedData = (data || []).map((item) => ({
-    category: item.category || item.name || "Sem categoria",
-    amount: toNumber(item.amount ?? item.value ?? item.total)
-  }))
+  category: String(item.category || item.name || "Sem categoria").trim(),
+  amount: toNumber(item.amount ?? item.value ?? item.total)
+}))
 
-  const validData = normalizedData.filter((item) => item.amount > 0)
+const validData = normalizedData.filter((item) => {
+  const label = item.category.toLowerCase()
+
+  return (
+    item.amount > 0 &&
+    label !== "sem categoria" &&
+    !label.includes("transfer")
+  )
+})
 
   const totalAmount = validData.reduce((acc, item) => acc + item.amount, 0)
 

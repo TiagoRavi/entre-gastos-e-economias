@@ -1,6 +1,4 @@
-# app/models/account.py
-
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 
 from app.models.base import BaseModel
@@ -25,12 +23,14 @@ class Account(BaseModel):
         nullable=False
     )
 
+    # 🔥 CORREÇÃO CRÍTICA
+    # Antes era Integer → isso quebra consistência com valores monetários
     initial_balance = Column(
-        Integer,
+        Numeric(12, 2),
         default=0
     )
 
-    # Relationships
+    # 🔗 Relationships
     user = relationship(
         "User",
         back_populates="accounts"

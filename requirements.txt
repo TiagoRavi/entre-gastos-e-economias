@@ -35,3 +35,5 @@ email-validator
 # UTILIDADES (recomendado)
 # =========================
 python-dateutil
+
+httpx
