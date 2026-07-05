@@ -46,6 +46,9 @@ export default function Transactions() {
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   const [totalPages, setTotalPages] = useState(1)
+  const [filterStatus, setFilterStatus] = useState("")
+  const [filterType, setFilterType] = useState("")
+  const [filterCategoryId, setFilterCategoryId] = useState("")
   const [openTransferModal, setOpenTransferModal] = useState(false)
   
   const [transferFrom, setTransferFrom] = useState("")
@@ -60,7 +63,13 @@ export default function Transactions() {
 
   useEffect(() => {
     loadTransactions()
-  }, [page, limit])
+  }, [
+    page,
+    limit,
+    filterStatus,
+    filterType,
+    filterCategoryId
+  ])
 
   const toggleMenu = (id: number) => {
     setOpenMenuId(prev => prev === id ? null : id)
@@ -91,7 +100,13 @@ export default function Transactions() {
     try {
 
       const res = await api.get("/transactions/", {
-        params: { page, limit }
+        params: {
+          page,
+          limit,
+          status: filterStatus || undefined,
+          transaction_type: filterType || undefined,
+          category_id: filterCategoryId ? Number(filterCategoryId): undefined
+        }
       })
 
       setTransactions(res.data.items || [])
@@ -302,6 +317,55 @@ export default function Transactions() {
 
       </div>
     </div>
+
+      {/* FILTROS */}
+
+      <div
+        className="card-hover"
+        style={{
+          padding: "16px",
+          marginBottom: "16px",
+          display: "flex",
+          gap: "12px",
+          flexWrap: "wrap"
+        }}
+      >
+
+        <select
+          value={filterType}
+          onChange={(e) => {
+          setFilterType(e.target.value)
+          setPage(1)
+        }}
+        >
+          <option value="">Todos os tipos</option>
+          <option value="income">Receitas</option>
+          <option value="expense">Despesas</option>
+        </select>
+
+        <select
+          value={filterCategoryId}
+          onChange={(e) => setFilterCategoryId(e.target.value)}
+        >
+          <option value="">Todas categorias</option>
+
+          {categories.map(cat => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="">Todos status</option>
+          <option value="confirmed">Confirmado</option>
+          <option value="pending">Pendente</option>
+        </select>
+
+      </div>
 
       {/* TABELA */}
 

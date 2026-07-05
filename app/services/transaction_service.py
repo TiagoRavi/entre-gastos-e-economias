@@ -85,29 +85,46 @@ def create_user_transaction(
     return transaction
 
 
+from datetime import date
+from typing import Optional
+
+from math import ceil
+
 def list_user_transactions(
     db: Session,
     user_id: int,
     page: int,
-    limit: int
+    limit: int,
+    transaction_type: Optional[str] = None,
+    category_id: Optional[int] = None,
+    account_id: Optional[int] = None,
+    status: Optional[str] = None,
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
 ):
-
     result = get_transactions_by_user(
         db=db,
         user_id=user_id,
         page=page,
-        limit=limit
+        limit=limit,
+        transaction_type=transaction_type,
+        category_id=category_id,
+        account_id=account_id,
+        status=status,
+        start_date=start_date,
+        end_date=end_date,
     )
 
     total = result["total"]
-
     pages = ceil(total / limit) if total > 0 else 1
 
     return {
+        "page": result["page"],
+        "limit": result["limit"],
+        "total": total,
+        "pages": pages,
         "items": result["items"],
-        "pages": pages
     }
-
 
 def confirm_user_transaction(
     db: Session,

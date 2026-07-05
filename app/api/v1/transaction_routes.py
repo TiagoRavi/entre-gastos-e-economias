@@ -16,6 +16,8 @@ from app.services.transaction_service import (
     confirm_user_transaction
 )
 
+from datetime import date
+
 router = APIRouter(
     prefix="/transactions",
     tags=["Transactions"]
@@ -46,15 +48,26 @@ def create_transaction(
 def list_transactions(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
+    transaction_type: str | None = Query(None),
+    category_id: int | None = Query(None),
+    account_id: int | None = Query(None),
+    status: str | None = Query(None),
+    start_date: date | None = Query(None),
+    end_date: date | None = Query(None),
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-
     return list_user_transactions(
         db=db,
         user_id=current_user.id,
         page=page,
-        limit=limit
+        limit=limit,
+        transaction_type=transaction_type,
+        category_id=category_id,
+        account_id=account_id,
+        status=status,
+        start_date=start_date,
+        end_date=end_date
     )
 
 

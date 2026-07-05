@@ -39,22 +39,48 @@ def create_transaction(
     return transaction
 
 
+from datetime import date
+from typing import Optional
+
 def get_transactions_by_user(
     db: Session,
     user_id: int,
     page: int = 1,
-    limit: int = 20
+    limit: int = 20,
+    transaction_type: Optional[str] = None,
+    category_id: Optional[int] = None,
+    account_id: Optional[int] = None,
+    status: Optional[str] = None,
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
 ):
-
     limit = min(limit, 100)
 
     query = (
         db.query(Transaction)
         .filter(Transaction.user_id == user_id)
-        .order_by(Transaction.date.desc())
     )
 
-    # paginate já retorna items + total
+    if transaction_type:
+        query = query.filter(Transaction.type == transaction_type)
+
+    if category_id:
+        query = query.filter(Transaction.category_id == category_id)
+
+    if account_id:
+        query = query.filter(Transaction.account_id == account_id)
+
+    if status:
+        query = query.filter(Transaction.status == status)
+
+    if start_date:
+        query = query.filter(Transaction.date >= start_date)
+
+    if end_date:
+        query = query.filter(Transaction.date <= end_date)
+
+    query = query.order_by(Transaction.date.desc())
+
     return paginate(query, page, limit)
 
 
